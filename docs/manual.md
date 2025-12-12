@@ -16,12 +16,13 @@ A tiny, Prolog-ish livecoding playground in the browser. You write facts and rul
 - Lists: `[a, b, c]`.
 - Comments: `% comment text`.
 
-## Built-ins (music)
+## Built-ins (music + constraints)
 - Rhythm grids: `beat(T, N)`, `phase(T, N, K)`, `every(T, Step)`
 - Probability: `prob(P)`
 - Lists/choices: `choose(List, X)`, `pick(List, X)`, `cycle(List, X)`, `range(Start, End, Step, X)`
 - Random: `rand(Min, Max, X)`, `randint(Min, Max, X)`
-- Math: `eq(A,B)`, `add(A,B,C)`
+- Math/relations: `eq(A,B)`, `add(A,B,C)`, `lt(A,B)`, `gt(A,B)`
+- Constraints: `within(T, Start, End)`, `distinct(List)`, `cooldown(Now, Last, Gap)`
 - Euclidean: `euc(T, K, N, B, R)`
 - Pitch helpers: `scale(Root, Mode, Degree, Oct, Midi)`, `chord(Root, Quality, Oct, Midi)`, `transpose(Note, Offset, Out)`, `rotate(List, Shift, OutList)`
 
@@ -48,6 +49,27 @@ lead(T, N) :- every(T,0.25), scale(60, ionian, 1, 0, N).
 lead(T, N) :- every(T,0.25), scale(60, ionian, 3, 0, N).
 lead(T, N) :- every(T,0.25), scale(60, ionian, 5, 0, N).
 event(sine, N, 0.4, T) :- lead(T, N).
+
+% Recursive loop over time (bounded)
+loop_hats(T, End) :-
+  T =< End,
+  event(hat, 42, 0.25, T),
+  add(T, 0.125, T1),
+  loop_hats(T1, End).
+
+start_loop(T0) :-
+  event(kick, 36, 0.95, T0),
+  add(T0, 0.125, Tstart),
+  add(T0, 2.0, Tend),
+  loop_hats(Tstart, Tend).
+
+% Recursive walk through a list (motif)
+play_seq(T, Step, [N|Ns]) :-
+  event(sine, N, 0.5, T),
+  add(T, Step, T1),
+  play_seq(T1, Step, Ns).
+play_seq(_, _, []).
+motif(T) :- play_seq(T, 0.25, [60,62,65,67]).
 ```
 
 ## Tips

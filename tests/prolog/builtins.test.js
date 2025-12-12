@@ -129,3 +129,32 @@ describe('builtins.randint', () => {
     expect(outs[0].X.value).toBeLessThan(10);
   });
 });
+
+describe('builtins.lt/gt', () => {
+  it('tests numeric ordering', () => {
+    expect(builtins.lt([{type:'num',value:1},{type:'num',value:2}], {})).toHaveLength(1);
+    expect(builtins.lt([{type:'num',value:2},{type:'num',value:1}], {})).toHaveLength(0);
+    expect(builtins.gt([{type:'num',value:2},{type:'num',value:1}], {})).toHaveLength(1);
+  });
+});
+
+describe('builtins.within', () => {
+  it('accepts times inside bounds', () => {
+    expect(builtins.within([{type:'num',value:1},{type:'num',value:0},{type:'num',value:2}], {})).toHaveLength(1);
+    expect(builtins.within([{type:'num',value:3},{type:'num',value:0},{type:'num',value:2}], {})).toHaveLength(0);
+  });
+});
+
+describe('builtins.distinct', () => {
+  it('fails when list has duplicates', () => {
+    expect(builtins.distinct([{type:'list', items:[{type:'num',value:1},{type:'num',value:1}]}], {})).toHaveLength(0);
+    expect(builtins.distinct([{type:'list', items:[{type:'num',value:1},{type:'num',value:2}]}], {})).toHaveLength(1);
+  });
+});
+
+describe('builtins.cooldown', () => {
+  it('passes when gap is satisfied', () => {
+    expect(builtins.cooldown([{type:'num',value:2},{type:'num',value:0},{type:'num',value:1}], {})).toHaveLength(1);
+    expect(builtins.cooldown([{type:'num',value:0.5},{type:'num',value:0},{type:'num',value:1}], {})).toHaveLength(0);
+  });
+});

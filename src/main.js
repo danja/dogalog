@@ -67,6 +67,11 @@ app.innerHTML = `
             <code>chord(Root, Quality, Oct, Midi)</code>
             <code>transpose(Note, Offset, Out)</code>
             <code>rotate(List, Shift, OutList)</code>
+            <code>lt(A,B)</code>
+            <code>gt(A,B)</code>
+            <code>within(T, Start, End)</code>
+            <code>distinct(List)</code>
+            <code>cooldown(Now, Last, Gap)</code>
           </div>
         </div>
       </div>

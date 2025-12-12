@@ -186,6 +186,38 @@ export function createBuiltins() {
       const e = unify(target, { type:'list', items: rotated }, env);
       return e ? [e] : [];
     },
+    lt: (args, env) => {
+      const a = evalNumber(args[0], env);
+      const b = evalNumber(args[1], env);
+      return a < b ? [env] : [];
+    },
+    gt: (args, env) => {
+      const a = evalNumber(args[0], env);
+      const b = evalNumber(args[1], env);
+      return a > b ? [env] : [];
+    },
+    within: (args, env) => {
+      const t = evalNumber(args[0], env);
+      const start = evalNumber(args[1], env);
+      const end = evalNumber(args[2], env);
+      return (t >= start && t <= end) ? [env] : [];
+    },
+    distinct: (args, env) => {
+      const list = evalList(args[0], env);
+      const seen = new Set();
+      for (const item of list) {
+        const key = JSON.stringify(item);
+        if (seen.has(key)) return [];
+        seen.add(key);
+      }
+      return [env];
+    },
+    cooldown: (args, env) => {
+      const now = evalNumber(args[0], env);
+      const last = evalNumber(args[1], env);
+      const gap = evalNumber(args[2], env);
+      return now - last >= gap ? [env] : [];
+    },
     range: (args, env) => {
       const start = evalNumber(args[0], env);
       const end = evalNumber(args[1], env);
