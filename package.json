@@ -7,7 +7,8 @@
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview",
-    "test": "vitest"
+    "test": "vitest",
+    "docs:html": "marked docs/manual.md -o docs/manual.html && marked cheatsheet.md -o docs/cheatsheet.html"
   },
   "dependencies": {
     "@codemirror/autocomplete": "^6.18.0",
@@ -20,6 +21,7 @@
   },
   "devDependencies": {
     "jsdom": "^27.3.0",
+    "marked": "^9.1.6",
     "vite": "^7.2.7",
     "vitest": "^4.0.15"
   }

@@ -16,7 +16,7 @@ import { Scheduler } from './scheduler/scheduler.js';
 import { defaultProgram } from './ui/defaultProgram.js';
 import { examples } from './ui/examples.js';
 
-const manualLink = `${import.meta.env.BASE_URL}docs/manual.md`;
+const manualLink = `${import.meta.env.BASE_URL}docs/manual.html`;
 
 const app = document.getElementById('app');
 app.innerHTML = `

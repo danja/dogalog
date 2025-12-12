@@ -12,8 +12,8 @@ Vite-based vanilla JS playground for a Prolog-like livecoding music toy. The cod
 Open the dev server URL, edit rules, click **Evaluate Rules**, then **Start**. Audio may require a user gesture before playback.
 
 Live demo (GitHub Pages) and docs:
-- Manual: `docs/manual.md`
-- Cheatsheet: `cheatsheet.md`
+- Manual (HTML): `docs/manual.html` (source `docs/manual.md`)
+- Cheatsheet (HTML): `docs/cheatsheet.html` (source `cheatsheet.md`)
 - Pages link: will be published via GitHub Actions on `main` (see `.github/workflows/deploy.yml`).
 
 ## Project layout

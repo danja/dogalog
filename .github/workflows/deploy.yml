@@ -26,6 +26,8 @@ jobs:
           node-version: 20
       - name: Install dependencies
         run: npm install
+      - name: Generate docs HTML
+        run: npm run docs:html
       - name: Build
         run: npm run build
       - name: Copy docs
