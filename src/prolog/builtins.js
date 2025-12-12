@@ -243,6 +243,10 @@ export function createBuiltins() {
       cycleState.set(key, nextIdx);
       const e = unify(target, list[idx], env);
       return e ? [e] : [];
+    },
+    reset: () => {
+      cycleState.clear();
+      return [];
     }
   };
 

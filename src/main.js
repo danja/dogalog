@@ -41,7 +41,6 @@ app.innerHTML = `
             ${examples.map((ex) => `<option value="${ex.id}">${ex.label}</option>`).join('')}
           </select>
         </label>
-        <button id="load-example" class="btn">Load</button>
         <a class="btn" href="${manualLink}" target="_blank" rel="noreferrer">Manual</a>
       </div>
       <div id="code-editor" class="editor-container"></div>
@@ -163,6 +162,7 @@ function evaluateProgram() {
     const text = getCode().trim();
     const normalized = text.endsWith('.') ? text : `${text}.`;
     const clauses = parseProgram(normalized);
+    if (builtins.reset) builtins.reset();
     scheduler.setProgram(clauses);
     log(`[ok] Loaded ${clauses.length} clauses.`);
   } catch (error) {
@@ -178,14 +178,18 @@ document.getElementById('start').onclick = async () => {
   log('[audio] started');
 };
 document.getElementById('stop').onclick = () => { scheduler.stop(); log('[audio] stopped'); };
-document.getElementById('load-example').onclick = () => {
+
+exampleSelect.addEventListener('change', () => {
   const id = exampleSelect.value;
   const ex = examples.find((item) => item.id === id);
   if (ex) {
+    const wasRunning = Boolean(scheduler.interval);
+    scheduler.stop();
     setCode(ex.code.trim());
     evaluateProgram();
+    if (wasRunning) scheduler.start();
   }
-};
+});
 
 bpmInput.addEventListener('input', (event) => {
   bpmValue.textContent = event.target.value;
