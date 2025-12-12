@@ -1,15 +1,20 @@
 import './style.css';
+import { EditorState } from '@codemirror/state';
+import { EditorView, keymap, lineNumbers, highlightActiveLine, highlightActiveLineGutter, drawSelection, dropCursor, highlightSpecialChars } from '@codemirror/view';
+import { defaultKeymap, history, historyKeymap, indentWithTab } from '@codemirror/commands';
+import { StreamLanguage } from '@codemirror/language';
+import { indentOnInput, syntaxHighlighting, defaultHighlightStyle, foldGutter, foldKeymap, bracketMatching } from '@codemirror/language';
+import { autocompletion, completionKeymap, closeBrackets, closeBracketsKeymap } from '@codemirror/autocomplete';
+import { searchKeymap, highlightSelectionMatches } from '@codemirror/search';
+import { oneDark } from '@codemirror/theme-one-dark';
+import { prologLanguage } from './ui/prologLanguage.js';
+
 import { parseProgram } from './prolog/parser.js';
 import { createBuiltins } from './prolog/builtins.js';
 import { AudioEngine } from './audio/audioEngine.js';
 import { Scheduler } from './scheduler/scheduler.js';
 import { defaultProgram } from './ui/defaultProgram.js';
 import { examples } from './ui/examples.js';
-import hljs from 'highlight.js/lib/core';
-import prologLang from 'highlight.js/lib/languages/prolog';
-import 'highlight.js/styles/github-dark.css';
-
-hljs.registerLanguage('prolog', prologLang);
 
 const app = document.getElementById('app');
 app.innerHTML = `
@@ -36,30 +41,30 @@ app.innerHTML = `
         </label>
         <button id="load-example" class="btn">Load</button>
       </div>
-      <div class="editor-stack">
-        <pre aria-hidden="true" class="editor-highlight"><code id="code-highlight" class="language-prolog"></code></pre>
-        <textarea id="code" spellcheck="false" class="editor"></textarea>
-      </div>
+      <div id="code-editor" class="editor-container"></div>
       <div class="mapping">
         <div class="row"><strong>Top goal:</strong> <code>event(Voice, Pitch, Vel, T).</code></div>
-        <div class="row"><span>Built-ins:</span>
-          <code>beat(T, N)</code>
-          <code>phase(T, N, K)</code>
-          <code>every(T, Step)</code>
-          <code>prob(P)</code>
-          <code>choose(List, X)</code>
-          <code>eq(A,B)</code>
-          <code>add(A,B,C)</code>
-          <code>euc(T, K, N, B, R)</code>
-          <code>rand(Min, Max, X)</code>
-          <code>pick(List, X)</code>
-          <code>randint(Min, Max, X)</code>
-          <code>range(Start, End, Step, X)</code>
-          <code>scale(Root, Mode, Degree, Oct, Midi)</code>
-          <code>chord(Root, Quality, Oct, Midi)</code>
-          <code>cycle(List, X)</code>
-          <code>transpose(Note, Offset, Out)</code>
-          <code>rotate(List, Shift, OutList)</code>
+        <div class="builtins">
+          <div class="builtins-title">Built-ins:</div>
+          <div class="builtins-grid">
+            <code>beat(T, N)</code>
+            <code>phase(T, N, K)</code>
+            <code>every(T, Step)</code>
+            <code>prob(P)</code>
+            <code>choose(List, X)</code>
+            <code>pick(List, X)</code>
+            <code>cycle(List, X)</code>
+            <code>range(Start, End, Step, X)</code>
+            <code>rand(Min, Max, X)</code>
+            <code>randint(Min, Max, X)</code>
+            <code>eq(A,B)</code>
+            <code>add(A,B,C)</code>
+            <code>euc(T, K, N, B, R)</code>
+            <code>scale(Root, Mode, Degree, Oct, Midi)</code>
+            <code>chord(Root, Quality, Oct, Midi)</code>
+            <code>transpose(Note, Offset, Out)</code>
+            <code>rotate(List, Shift, OutList)</code>
+          </div>
         </div>
       </div>
     </section>
@@ -83,8 +88,6 @@ app.innerHTML = `
 `;
 
 const logEl = document.getElementById('log');
-const codeEl = document.getElementById('code');
-const codeHighlight = document.getElementById('code-highlight');
 const exampleSelect = document.getElementById('example-select');
 const bpmInput = document.getElementById('bpm');
 const bpmValue = document.getElementById('bpmv');
@@ -92,39 +95,64 @@ const swingInput = document.getElementById('swing');
 const swingValue = document.getElementById('swingv');
 const lookaheadInput = document.getElementById('look');
 const lookaheadValue = document.getElementById('lookv');
+const editorHost = document.getElementById('code-editor');
 
 const builtins = createBuiltins();
 const audio = new AudioEngine();
 const scheduler = new Scheduler({ audio, builtins });
 
-codeEl.value = defaultProgram.trim();
-exampleSelect.value = examples[0]?.id ?? '';
-renderHighlight();
+let editorView;
+
+function makeEditor(doc) {
+  const extensions = [
+    lineNumbers(),
+    highlightActiveLineGutter(),
+    highlightSpecialChars(),
+    history(),
+    foldGutter(),
+    drawSelection(),
+    dropCursor(),
+    EditorState.allowMultipleSelections.of(true),
+    indentOnInput(),
+    syntaxHighlighting(defaultHighlightStyle, { fallback: true }),
+    bracketMatching(),
+    closeBrackets(),
+    autocompletion(),
+    highlightActiveLine(),
+    highlightSelectionMatches(),
+    keymap.of([
+      ...closeBracketsKeymap,
+      ...defaultKeymap,
+      ...searchKeymap,
+      ...historyKeymap,
+      ...foldKeymap,
+      ...completionKeymap,
+      indentWithTab
+    ]),
+    StreamLanguage.define(prologLanguage),
+    EditorView.lineWrapping,
+    oneDark
+  ];
+  const state = EditorState.create({ doc, extensions });
+  editorView = new EditorView({ state, parent: editorHost });
+}
+
+function getCode() {
+  return editorView ? editorView.state.doc.toString() : '';
+}
+
+function setCode(text) {
+  if (!editorView) return;
+  editorView.dispatch({ changes: { from: 0, to: editorView.state.doc.length, insert: text } });
+}
 
 function log(msg) {
   logEl.textContent = (msg + "\n" + logEl.textContent).slice(0, 8000);
 }
 
-function renderHighlight() {
-  if (!codeHighlight) return;
-  codeHighlight.textContent = codeEl.value || ' ';
-  // hljs caches state via data-highlighted; clear before re-highlighting.
-  codeHighlight.removeAttribute('data-highlighted');
-  hljs.highlightElement(codeHighlight);
-}
-
-function syncScroll() {
-  if (!codeHighlight) return;
-  const container = codeHighlight.parentElement;
-  container.scrollTop = codeEl.scrollTop;
-  container.scrollLeft = codeEl.scrollLeft;
-  codeHighlight.scrollTop = codeEl.scrollTop;
-  codeHighlight.scrollLeft = codeEl.scrollLeft;
-}
-
 function evaluateProgram() {
   try {
-    const text = codeEl.value.trim();
+    const text = getCode().trim();
     const normalized = text.endsWith('.') ? text : `${text}.`;
     const clauses = parseProgram(normalized);
     scheduler.setProgram(clauses);
@@ -146,10 +174,8 @@ document.getElementById('load-example').onclick = () => {
   const id = exampleSelect.value;
   const ex = examples.find((item) => item.id === id);
   if (ex) {
-    codeEl.value = ex.code.trim();
+    setCode(ex.code.trim());
     evaluateProgram();
-    renderHighlight();
-    syncScroll();
   }
 };
 
@@ -171,9 +197,6 @@ lookaheadInput.addEventListener('input', (event) => {
   }
 });
 
-codeEl.addEventListener('input', () => renderHighlight());
-codeEl.addEventListener('scroll', () => syncScroll());
-
+makeEditor(defaultProgram.trim());
+exampleSelect.value = examples[0]?.id ?? '';
 evaluateProgram();
-renderHighlight();
-syncScroll();

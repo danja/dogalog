@@ -1,6 +1,5 @@
 import { beforeEach, afterEach, describe, expect, it, vi } from 'vitest';
 import { createBuiltins } from '../../src/prolog/builtins.js';
-import { unify } from '../../src/prolog/unify.js';
 
 const builtins = createBuiltins();
 
@@ -114,5 +113,19 @@ describe('builtins.range', () => {
     ], {});
     const vals = outs.map((o)=>o.X.value);
     expect(vals).toEqual([0,1,2]);
+  });
+});
+
+describe('builtins.randint', () => {
+  it('yields an integer within bounds', () => {
+    Math.random = vi.fn(() => 0.4);
+    const outs = builtins.randint([
+      { type:'num', value:0 },
+      { type:'num', value:10 },
+      { type:'var', name:'X' }
+    ], {});
+    expect(Number.isInteger(outs[0].X.value)).toBe(true);
+    expect(outs[0].X.value).toBeGreaterThanOrEqual(0);
+    expect(outs[0].X.value).toBeLessThan(10);
   });
 });
