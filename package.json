@@ -9,6 +9,9 @@
     "preview": "vite preview",
     "test": "vitest"
   },
+  "dependencies": {
+    "highlight.js": "^11.9.0"
+  },
   "devDependencies": {
     "jsdom": "^27.3.0",
     "vite": "^7.2.7",

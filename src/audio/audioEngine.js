@@ -62,12 +62,22 @@ export class AudioEngine {
     n.start(t); n.stop(t+0.1);
   }
 
-  sine(t, midi=48, vel=0.6) {
+  sine(t, midi=48, vel=0.65) {
     const ctx = this.ctx;
-    const o = ctx.createOscillator(); o.type='sine'; o.frequency.value = this.noteToFreq(midi);
-    const g = ctx.createGain(); g.gain.value = vel;
-    const f = ctx.createBiquadFilter(); f.type='lowpass'; f.frequency.value=3000; f.Q.value=0.2;
+    const o = ctx.createOscillator();
+    o.type = 'sine';
+    o.frequency.value = this.noteToFreq(midi);
+    const f = ctx.createBiquadFilter();
+    f.type = 'lowpass';
+    f.frequency.value = 4500;
+    f.Q.value = 0.3;
+    const g = ctx.createGain();
+    const dur = 0.5;
+    g.gain.setValueAtTime(0, t);
+    g.gain.linearRampToValueAtTime(vel, t + 0.02);
+    g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
     o.connect(f).connect(g).connect(this.master);
-    o.start(t); o.stop(t+0.25);
+    o.start(t);
+    o.stop(t + dur + 0.05);
   }
 }

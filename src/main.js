@@ -4,6 +4,12 @@ import { createBuiltins } from './prolog/builtins.js';
 import { AudioEngine } from './audio/audioEngine.js';
 import { Scheduler } from './scheduler/scheduler.js';
 import { defaultProgram } from './ui/defaultProgram.js';
+import { examples } from './ui/examples.js';
+import hljs from 'highlight.js/lib/core';
+import prologLang from 'highlight.js/lib/languages/prolog';
+import 'highlight.js/styles/github-dark.css';
+
+hljs.registerLanguage('prolog', prologLang);
 
 const app = document.getElementById('app');
 app.innerHTML = `
@@ -22,7 +28,18 @@ app.innerHTML = `
   <main>
     <section class="panel">
       <h2>Rules (Prolog-ish)</h2>
-      <textarea id="code" spellcheck="false" class="editor"></textarea>
+      <div class="example-bar">
+        <label>Examples
+          <select id="example-select">
+            ${examples.map((ex) => `<option value="${ex.id}">${ex.label}</option>`).join('')}
+          </select>
+        </label>
+        <button id="load-example" class="btn">Load</button>
+      </div>
+      <div class="editor-stack">
+        <pre aria-hidden="true" class="editor-highlight"><code id="code-highlight" class="language-prolog"></code></pre>
+        <textarea id="code" spellcheck="false" class="editor"></textarea>
+      </div>
       <div class="mapping">
         <div class="row"><strong>Top goal:</strong> <code>event(Voice, Pitch, Vel, T).</code></div>
         <div class="row"><span>Built-ins:</span>
@@ -34,6 +51,15 @@ app.innerHTML = `
           <code>eq(A,B)</code>
           <code>add(A,B,C)</code>
           <code>euc(T, K, N, B, R)</code>
+          <code>rand(Min, Max, X)</code>
+          <code>pick(List, X)</code>
+          <code>randint(Min, Max, X)</code>
+          <code>range(Start, End, Step, X)</code>
+          <code>scale(Root, Mode, Degree, Oct, Midi)</code>
+          <code>chord(Root, Quality, Oct, Midi)</code>
+          <code>cycle(List, X)</code>
+          <code>transpose(Note, Offset, Out)</code>
+          <code>rotate(List, Shift, OutList)</code>
         </div>
       </div>
     </section>
@@ -58,6 +84,8 @@ app.innerHTML = `
 
 const logEl = document.getElementById('log');
 const codeEl = document.getElementById('code');
+const codeHighlight = document.getElementById('code-highlight');
+const exampleSelect = document.getElementById('example-select');
 const bpmInput = document.getElementById('bpm');
 const bpmValue = document.getElementById('bpmv');
 const swingInput = document.getElementById('swing');
@@ -70,9 +98,28 @@ const audio = new AudioEngine();
 const scheduler = new Scheduler({ audio, builtins });
 
 codeEl.value = defaultProgram.trim();
+exampleSelect.value = examples[0]?.id ?? '';
+renderHighlight();
 
 function log(msg) {
   logEl.textContent = (msg + "\n" + logEl.textContent).slice(0, 8000);
+}
+
+function renderHighlight() {
+  if (!codeHighlight) return;
+  codeHighlight.textContent = codeEl.value || ' ';
+  // hljs caches state via data-highlighted; clear before re-highlighting.
+  codeHighlight.removeAttribute('data-highlighted');
+  hljs.highlightElement(codeHighlight);
+}
+
+function syncScroll() {
+  if (!codeHighlight) return;
+  const container = codeHighlight.parentElement;
+  container.scrollTop = codeEl.scrollTop;
+  container.scrollLeft = codeEl.scrollLeft;
+  codeHighlight.scrollTop = codeEl.scrollTop;
+  codeHighlight.scrollLeft = codeEl.scrollLeft;
 }
 
 function evaluateProgram() {
@@ -95,6 +142,16 @@ document.getElementById('start').onclick = async () => {
   log('[audio] started');
 };
 document.getElementById('stop').onclick = () => { scheduler.stop(); log('[audio] stopped'); };
+document.getElementById('load-example').onclick = () => {
+  const id = exampleSelect.value;
+  const ex = examples.find((item) => item.id === id);
+  if (ex) {
+    codeEl.value = ex.code.trim();
+    evaluateProgram();
+    renderHighlight();
+    syncScroll();
+  }
+};
 
 bpmInput.addEventListener('input', (event) => {
   bpmValue.textContent = event.target.value;
@@ -114,4 +171,9 @@ lookaheadInput.addEventListener('input', (event) => {
   }
 });
 
+codeEl.addEventListener('input', () => renderHighlight());
+codeEl.addEventListener('scroll', () => syncScroll());
+
 evaluateProgram();
+renderHighlight();
+syncScroll();

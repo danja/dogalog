@@ -8,13 +8,19 @@ main { display:grid; grid-template-columns: 1.2fr .8fr; gap:14px; padding:14px; 
 textarea, pre, input, button, select { font: inherit; }
 .panel { background: var(--panel); border: 1px solid #1f232b; border-radius: 12px; overflow:hidden; }
 .panel h2 { margin:0; padding:10px 12px; font-size:12px; letter-spacing:.02em; color:var(--muted); border-bottom:1px solid #1f232b; background:#0e1218; }
-.editor { height: 48vh; width: 100%; border:0; outline:none; padding:12px; resize:vertical; color:var(--ink); background:transparent; }
+.editor-stack { position: relative; padding:10px 12px 0; }
+.editor-highlight { margin:0; padding:12px; min-height: 48vh; white-space:pre-wrap; word-break:break-word; background: #0c1017; border:1px solid #1f232b; border-radius:10px; color:var(--ink); overflow:auto; font: inherit; line-height:1.4; tab-size: 2; pointer-events:none; }
+.editor { position:absolute; inset:10px 12px 0 12px; width:calc(100% - 24px); height: calc(48vh + 2px); border:0; outline:none; padding:12px; resize:none; color:transparent; caret-color:var(--ink); background:transparent; font: inherit; line-height:1.4; tab-size: 2; }
+.editor::selection { background: rgba(126,231,135,0.25); }
 .controls { display:flex; gap:10px; align-items:center; flex-wrap:wrap; padding:10px 12px; }
 .controls label { font-size:12px; color:var(--muted); }
 .controls input[type="range"] { width:160px; }
 .btn { padding:8px 12px; background:#1a1f2a; color:var(--ink); border:1px solid #2b3240; border-radius:8px; cursor:pointer; }
 .btn.primary { background: #10381a; border-color:#245a2e; color:#c7ffcf; }
 .btn.danger { background:#31121a; border-color:#5a2432; color:#ffc7d4; }
+.example-bar { display:flex; align-items:center; gap:10px; padding:8px 12px; border-bottom:1px solid #1f232b; background:#0f131a; }
+.example-bar label { color:var(--muted); font-size:12px; display:flex; align-items:center; gap:6px; }
+.example-bar select { background:#0b0f16; color:var(--ink); border:1px solid #1f232b; border-radius:8px; padding:6px; font:inherit; }
 .log { height: 18vh; overflow:auto; padding:10px 12px; font-size:12px; white-space:pre-wrap; }
 .mapping { padding:8px 12px; display:grid; gap:8px; grid-template-columns: 1fr; }
 .row { display:flex; gap:8px; align-items:center; }

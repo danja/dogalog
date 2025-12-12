@@ -20,5 +20,5 @@ Open the dev server URL, edit rules, click **Evaluate Rules**, then **Start**. A
 
 ## Notes
 - The scheduler queries `event(Voice, Pitch, Vel, T)` on a 16th-note grid and triggers matching instruments.
-- Built-ins include `every/2`, `beat/2`, `phase/3`, `prob/1`, `eq/2`, `add/3`, `choose/2`, `euc/5`.
+- Built-ins include `every/2`, `beat/2`, `phase/3`, `prob/1`, `eq/2`, `add/3`, `choose/2`, `pick/2`, `cycle/2`, `rotate/3`, `range/4`, `transpose/3`, `euc/5`, `rand/3`, `randint/3`, `scale/5`, `chord/4`.
 - Swing and lookahead are adjustable from the controls bar.
