@@ -16,6 +16,8 @@ import { Scheduler } from './scheduler/scheduler.js';
 import { defaultProgram } from './ui/defaultProgram.js';
 import { examples } from './ui/examples.js';
 
+const manualLink = `${import.meta.env.BASE_URL}docs/manual.md`;
+
 const app = document.getElementById('app');
 app.innerHTML = `
   <header>
@@ -40,7 +42,7 @@ app.innerHTML = `
           </select>
         </label>
         <button id="load-example" class="btn">Load</button>
-        <a class="btn" href="docs/manual.md" target="_blank" rel="noreferrer">Manual</a>
+        <a class="btn" href="${manualLink}" target="_blank" rel="noreferrer">Manual</a>
       </div>
       <div id="code-editor" class="editor-container"></div>
       <div class="mapping">
