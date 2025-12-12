@@ -1,7 +1,12 @@
 import { tokenize } from './tokenizer.js';
 
+function stripComments(src) {
+  // Remove percent comments that run until end-of-line.
+  return src.replace(/%[^\n\r]*/g, '');
+}
+
 export function parseProgram(src) {
-  const tokens = tokenize(src);
+  const tokens = tokenize(stripComments(src));
   let index = 0;
 
   function peek() { return tokens[index]; }

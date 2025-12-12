@@ -3,6 +3,7 @@
 const tokenPattern = /\s+|([A-Za-z_][A-Za-z0-9_]*)|(\d+\.?\d*)|(:-|[()\[\],.|])|(%[^\n]*)/gy;
 
 export function tokenize(src) {
+  tokenPattern.lastIndex = 0; // reset sticky regex between calls
   const tokens = [];
   let match;
   while ((match = tokenPattern.exec(src)) !== null) {

@@ -1,8 +1,8 @@
 import { describe, expect, it } from 'vitest';
-import { parseProgram } from '../parser.js';
-import { createBuiltins } from '../builtins.js';
-import { resolveGoals } from '../resolution.js';
-import { substTerm } from '../terms.js';
+import { parseProgram } from '../../src/prolog/parser.js';
+import { createBuiltins } from '../../src/prolog/builtins.js';
+import { resolveGoals } from '../../src/prolog/resolution.js';
+import { substTerm } from '../../src/prolog/terms.js';
 
 const builtins = createBuiltins();
 
@@ -14,7 +14,8 @@ describe('parser', () => {
   });
 
   it('ignores percent comments and keeps clauses', () => {
-    const program = `% comment\\nfoo(a).`;
+    const program = `% comment
+foo(a).`;
     const clauses = parseProgram(program);
     expect(clauses).toHaveLength(1);
     expect(clauses[0].head.f).toBe('foo');
