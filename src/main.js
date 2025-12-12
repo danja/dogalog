@@ -40,6 +40,7 @@ app.innerHTML = `
           </select>
         </label>
         <button id="load-example" class="btn">Load</button>
+        <a class="btn" href="docs/manual.md" target="_blank" rel="noreferrer">Manual</a>
       </div>
       <div id="code-editor" class="editor-container"></div>
       <div class="mapping">
