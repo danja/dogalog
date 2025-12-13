@@ -43,12 +43,15 @@ body {
   line-height: 1.5;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  max-width: 100%;
+  overflow-x: hidden;
 }
 
 #app {
   min-height: 100vh;
   display: flex;
   flex-direction: column;
+  min-width: 0;
 }
 
 /* Typography inheritance */
@@ -84,6 +87,7 @@ main {
   gap: var(--spacing-sm);
   padding: var(--spacing-sm);
   flex: 1;
+  min-width: 0;
 }
 
 /* Panels */
@@ -94,6 +98,7 @@ main {
   overflow: hidden;
   display: flex;
   flex-direction: column;
+  min-width: 0;
 }
 
 .panel h2 {
@@ -109,6 +114,9 @@ main {
 /* Editor container */
 .editor-container {
   padding: 10px var(--spacing-sm) 0;
+  width: 100%;
+  min-width: 0;
+  overflow: hidden;
 }
 
 .cm-editor {
@@ -117,15 +125,44 @@ main {
   border: 1px solid var(--border);
   border-radius: 10px;
   min-height: 40vh;
+  width: 100%;
+  max-width: 100%;
+  display: block;
+  inline-size: 100%;
+  max-inline-size: 100%;
+  overflow: hidden;
 }
 
 .cm-scroller {
   font: inherit;
   line-height: 1.4;
+  width: 100%;
+  max-width: 100%;
+  inline-size: 100%;
+  max-inline-size: 100%;
+  overflow-x: auto;
+  overflow-y: auto;
 }
 
 .cm-content {
   caret-color: var(--ink);
+  min-width: 0;
+  width: 100%;
+  inline-size: 100%;
+  max-width: 100%;
+  max-inline-size: 100%;
+  white-space: pre-wrap;
+  word-break: break-word;
+  overflow-wrap: anywhere;
+  box-sizing: border-box;
+}
+
+.cm-line {
+  word-break: break-word;
+  overflow-wrap: anywhere;
+  white-space: pre-wrap;
+  max-width: 100%;
+  box-sizing: border-box;
 }
 
 /* Controls - touch-friendly */
@@ -338,7 +375,7 @@ footer {
 @media (min-width: 768px) {
   main {
     display: grid;
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
     gap: var(--spacing-md);
     padding: var(--spacing-md);
   }
@@ -367,7 +404,7 @@ footer {
 /* Desktop: 1024px+ */
 @media (min-width: 1024px) {
   main {
-    grid-template-columns: 1.2fr 0.8fr;
+    grid-template-columns: minmax(0, 1.2fr) minmax(0, 0.8fr);
     gap: 14px;
   }
 

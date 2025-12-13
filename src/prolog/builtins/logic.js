@@ -1,4 +1,5 @@
-import { evalNumber, evalTerm, evalList, deepEqual } from './utils.js';
+import { evalNumber, evalTerm, evalList, deepEqual, evalExpression } from './utils.js';
+import { unify } from '../unify.js';
 
 /**
  * Logic and constraint builtin predicates
@@ -11,6 +12,44 @@ export function eq(args, env) {
   const A = evalTerm(args[0], env);
   const B = evalTerm(args[1], env);
   return deepEqual(A, B) ? [env] : [];
+}
+
+/**
+ * =:= / numeric equality
+ */
+export function eqNumeric(args, env) {
+  const a = evalNumber(args[0], env);
+  const b = evalNumber(args[1], env);
+  return a === b ? [env] : [];
+}
+
+/**
+ * =\= / numeric inequality
+ */
+export function neqNumeric(args, env) {
+  const a = evalNumber(args[0], env);
+  const b = evalNumber(args[1], env);
+  return a !== b ? [env] : [];
+}
+
+/**
+ * Unification goal (=)
+ */
+export function unifyGoal(args, env) {
+  const left = normalizeTerm(args[0], env);
+  const right = normalizeTerm(args[1], env);
+  const out = unify(left, right, { ...env });
+  return out ? [out] : [];
+}
+
+function normalizeTerm(term, env) {
+  // If it's an arithmetic expression we can reduce it before unifying
+  try {
+    const value = evalExpression(term, env);
+    return { type: 'num', value };
+  } catch {
+    return evalTerm(term, env);
+  }
 }
 
 /**
@@ -29,6 +68,21 @@ export function gt(args, env) {
   const a = evalNumber(args[0], env);
   const b = evalNumber(args[1], env);
   return a > b ? [env] : [];
+}
+
+/**
+ * <= / >=
+ */
+export function lte(args, env) {
+  const a = evalNumber(args[0], env);
+  const b = evalNumber(args[1], env);
+  return a <= b ? [env] : [];
+}
+
+export function gte(args, env) {
+  const a = evalNumber(args[0], env);
+  const b = evalNumber(args[1], env);
+  return a >= b ? [env] : [];
 }
 
 /**

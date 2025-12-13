@@ -69,5 +69,9 @@ export class Scheduler {
     if (v==='snare') return this.audio.snare(t, vel);
     if (v==='hat') return this.audio.hat(t, vel);
     if (v==='sine') return this.audio.sine(t, midi, vel);
+    if (v==='clap') return this.audio.clap(t, vel);
+    if (v==='square') return this.audio.square(t, midi, vel);
+    if (v==='triangle') return this.audio.triangle(t, midi, vel);
+    if (v==='noise') return this.audio.noise(t, vel);
   }
 }

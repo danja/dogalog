@@ -189,7 +189,11 @@ function createInstrumentsSection() {
     { name: 'kick', desc: 'synthesized kick' },
     { name: 'snare', desc: 'noise snare' },
     { name: 'hat', desc: 'noise hat' },
-    { name: 'sine', desc: 'sine monosynth (use Pitch as MIDI)' }
+    { name: 'clap', desc: 'layered noise clap' },
+    { name: 'sine', desc: 'sine monosynth (use Pitch as MIDI)' },
+    { name: 'square', desc: 'square monosynth (use Pitch as MIDI)' },
+    { name: 'triangle', desc: 'triangle monosynth (use Pitch as MIDI)' },
+    { name: 'noise', desc: 'broadband noise burst (ignore Pitch)' }
   ];
 
   instruments.forEach(inst => {

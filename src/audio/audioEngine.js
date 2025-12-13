@@ -80,4 +80,97 @@ export class AudioEngine {
     o.start(t);
     o.stop(t + dur + 0.05);
   }
+
+  clap(t, vel = 0.75) {
+    const ctx = this.ctx;
+    const noise = ctx.createBufferSource();
+    const buf = ctx.createBuffer(1, ctx.sampleRate * 0.2, ctx.sampleRate);
+    const data = buf.getChannelData(0);
+    for (let i = 0; i < data.length; i++) data[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / data.length, 3);
+    noise.buffer = buf;
+
+    const bp = ctx.createBiquadFilter();
+    bp.type = 'bandpass';
+    bp.frequency.value = 1800;
+    bp.Q.value = 0.8;
+
+    const g = ctx.createGain();
+    g.gain.setValueAtTime(0, t);
+    // Multiple quick transients
+    g.gain.linearRampToValueAtTime(vel * 0.8, t + 0.005);
+    g.gain.exponentialRampToValueAtTime(0.001, t + 0.12);
+    g.gain.linearRampToValueAtTime(vel * 0.6, t + 0.02);
+    g.gain.exponentialRampToValueAtTime(0.0005, t + 0.18);
+
+    noise.connect(bp).connect(g).connect(this.master);
+    noise.start(t);
+    noise.stop(t + 0.25);
+  }
+
+  square(t, midi = 48, vel = 0.6) {
+    const ctx = this.ctx;
+    const o = ctx.createOscillator();
+    o.type = 'square';
+    o.frequency.value = this.noteToFreq(midi);
+
+    const f = ctx.createBiquadFilter();
+    f.type = 'lowpass';
+    f.frequency.value = 900;
+    f.Q.value = 0.7;
+
+    const g = ctx.createGain();
+    const dur = 0.4;
+    g.gain.setValueAtTime(0, t);
+    g.gain.linearRampToValueAtTime(vel, t + 0.01);
+    g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
+
+    o.connect(f).connect(g).connect(this.master);
+    o.start(t);
+    o.stop(t + dur + 0.05);
+  }
+
+  triangle(t, midi = 48, vel = 0.6) {
+    const ctx = this.ctx;
+    const o = ctx.createOscillator();
+    o.type = 'triangle';
+    o.frequency.value = this.noteToFreq(midi);
+
+    const f = ctx.createBiquadFilter();
+    f.type = 'lowpass';
+    f.frequency.value = 1500;
+    f.Q.value = 0.5;
+
+    const g = ctx.createGain();
+    const dur = 0.5;
+    g.gain.setValueAtTime(0, t);
+    g.gain.linearRampToValueAtTime(vel, t + 0.01);
+    g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
+
+    o.connect(f).connect(g).connect(this.master);
+    o.start(t);
+    o.stop(t + dur + 0.05);
+  }
+
+  noise(t, vel = 0.35) {
+    const ctx = this.ctx;
+    const n = ctx.createBufferSource();
+    const buf = ctx.createBuffer(1, ctx.sampleRate * 0.4, ctx.sampleRate);
+    const data = buf.getChannelData(0);
+    for (let i = 0; i < data.length; i++) data[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / data.length, 4);
+    n.buffer = buf;
+
+    const hp = ctx.createBiquadFilter();
+    hp.type = 'highpass';
+    hp.frequency.value = 400;
+    hp.Q.value = 0.8;
+
+    const g = ctx.createGain();
+    g.gain.setValueAtTime(0, t);
+    g.gain.linearRampToValueAtTime(vel, t + 0.01);
+    g.gain.exponentialRampToValueAtTime(0.0001, t + 0.3);
+
+    n.connect(hp).connect(g).connect(this.master);
+    n.start(t);
+    n.stop(t + 0.35);
+  }
 }

@@ -10,6 +10,7 @@ import { substTerm } from '../terms.js';
 export function evalNumber(term, env) {
   const t = substTerm(term, env);
   if (t.type === 'num') return t.value;
+  if (t.type === 'expr') return evalExpression(t, env);
   throw new Error('Expected number in builtin');
 }
 
@@ -22,7 +23,7 @@ export function evalNumber(term, env) {
  */
 export function evalList(term, env) {
   const t = substTerm(term, env);
-  if (t.type === 'list') return t.items;
+  if (t.type === 'list' && !t.tail) return t.items;
   throw new Error('Expected list in builtin');
 }
 
@@ -34,6 +35,30 @@ export function evalList(term, env) {
  */
 export function evalTerm(term, env) {
   return substTerm(term, env);
+}
+
+/**
+ * Evaluate an arithmetic expression term recursively
+ * @param {Object} term - Expression or numeric term
+ * @param {Object} env - Variable environment
+ * @returns {number}
+ */
+export function evalExpression(term, env) {
+  const t = substTerm(term, env);
+  if (t.type === 'num') return t.value;
+  if (t.type === 'expr') {
+    const left = evalExpression(t.left, env);
+    const right = evalExpression(t.right, env);
+    switch (t.op) {
+      case '+': return left + right;
+      case '-': return left - right;
+      case '*': return left * right;
+      case '/': return left / right;
+      default:
+        throw new Error(`Unsupported operator ${t.op}`);
+    }
+  }
+  throw new Error('Expected numeric expression');
 }
 
 /**

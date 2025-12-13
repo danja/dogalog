@@ -27,7 +27,8 @@ A tiny, Prolog-ish livecoding playground in the browser. You write facts and rul
 - Pitch helpers: `scale(Root, Mode, Degree, Oct, Midi)`, `chord(Root, Quality, Oct, Midi)`, `transpose(Note, Offset, Out)`, `rotate(List, Shift, OutList)`
 
 ## Instruments (voices)
-- `kick`, `snare`, `hat`, `sine` (Pitch is MIDI for `sine`).
+- `kick`, `snare`, `hat`, `clap`, `noise` (drums/noise; ignore Pitch)
+- `sine`, `square`, `triangle` (monosynths; Pitch is MIDI)
 
 ## Examples
 ```prolog
@@ -77,6 +78,23 @@ motif(T) :- play_seq(T, 0.25, [60,62,65,67]).
 - Combine deterministic grids (`beat/phase/every`) with `prob` for variation.
 - `cycle` for motifs, `pick/rand` for surprise, `euc` for quick grooves.
 - If timing is off, reduce Lookahead; add Swing for feel.
+
+## Dogalog Language Reference
+- **Programs**: A program is a list of clauses ending with `.`. Clauses are either facts (`drum(kick).`) or rules (`head :- goal1, goal2.`).
+- **Terms**: atoms (`kick`), numbers (`42`, `3.14`), variables (`X`, `_Foo`), lists (`[a, b, c]`), compounds (`event(kick, 36, 0.8, T)`), and arithmetic expressions (`(A + 3) * 0.5`).
+- **Variables**: Uppercase or `_` start a variable; `_` is anonymous and fresh each time. Variables are renamed per rule application.
+- **Top goal**: The engine repeatedly queries `event(Voice, Pitch, Vel, T)`. Your rules should ultimately derive that predicate to make sound.
+- **Conjunction**: `,` means logical AND and is evaluated left-to-right with backtracking.
+- **Disjunction**: `;` means logical OR. `(a, b ; c)` tries `a, b` first, then `c`.
+- **Negation as failure**: `\+ Goal` succeeds when `Goal` has no solutions. Works with grouped goals: `\+ (beat(T, 1) ; beat(T, 3))`.
+- **Grouping**: Parentheses change precedence for disjunction/negation and arithmetic.
+- **Infix comparisons**: Use `<`, `>`, `=<`, `>=`, `=:=` (numeric equality), `=\=` (numeric inequality), and `=` (unification). Examples: `T >= 4`, `Vel =:= 0.8`, `Note1 = Note2`.
+- **Arithmetic expressions**: `+`, `-`, `*`, `/` can appear inside arguments and in infix comparisons: `Vel = (A + B) / 2`, `T < 8 - 0.5`.
+- **Unification**: `=` unifies terms (after evaluating arithmetic expressions). It can bind variables or check equality of structures.
+- **Built-ins vs infix**: Comparisons via infix operators replace `lt/gt/eq` in most cases. List/logic helpers (`within/3`, `distinct/1`, `cooldown/3`, etc.) remain as predicates.
+- **Randomness/state**: `prob/1`, `choose/2`, `pick/2`, `rand/3`, `randint/3` add variation. `cycle/2` and `cooldown/3` keep state across calls (reset by example change or reload).
+- **Time**: `T` is in beats. Use `beat/2`, `phase/3`, `every/2`, `euc/5`, `within/3` for rhythm. Scheduler swing/lookahead are handled automatically.
+- **Comments**: `%` starts a line comment (runs to newline).
 
 ## Troubleshooting
 - No sound: click the page, press **Start**, ensure device volume, disable mute/silent.

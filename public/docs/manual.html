@@ -29,7 +29,8 @@
 </ul>
 <h2>Instruments (voices)</h2>
 <ul>
-<li><code>kick</code>, <code>snare</code>, <code>hat</code>, <code>sine</code> (Pitch is MIDI for <code>sine</code>).</li>
+<li><code>kick</code>, <code>snare</code>, <code>hat</code>, <code>clap</code>, <code>noise</code> (drums/noise; ignore Pitch)</li>
+<li><code>sine</code>, <code>square</code>, <code>triangle</code> (monosynths; Pitch is MIDI)</li>
 </ul>
 <h2>Examples</h2>
 <pre><code class="language-prolog">% Drums
@@ -78,6 +79,24 @@ motif(T) :- play_seq(T, 0.25, [60,62,65,67]).
 <li>Combine deterministic grids (<code>beat/phase/every</code>) with <code>prob</code> for variation.</li>
 <li><code>cycle</code> for motifs, <code>pick/rand</code> for surprise, <code>euc</code> for quick grooves.</li>
 <li>If timing is off, reduce Lookahead; add Swing for feel.</li>
+</ul>
+<h2>Dogalog Language Reference</h2>
+<ul>
+<li><strong>Programs</strong>: A program is a list of clauses ending with <code>.</code>. Clauses are either facts (<code>drum(kick).</code>) or rules (<code>head :- goal1, goal2.</code>).</li>
+<li><strong>Terms</strong>: atoms (<code>kick</code>), numbers (<code>42</code>, <code>3.14</code>), variables (<code>X</code>, <code>_Foo</code>), lists (<code>[a, b, c]</code>), compounds (<code>event(kick, 36, 0.8, T)</code>), and arithmetic expressions (<code>(A + 3) * 0.5</code>).</li>
+<li><strong>Variables</strong>: Uppercase or <code>_</code> start a variable; <code>_</code> is anonymous and fresh each time. Variables are renamed per rule application.</li>
+<li><strong>Top goal</strong>: The engine repeatedly queries <code>event(Voice, Pitch, Vel, T)</code>. Your rules should ultimately derive that predicate to make sound.</li>
+<li><strong>Conjunction</strong>: <code>,</code> means logical AND and is evaluated left-to-right with backtracking.</li>
+<li><strong>Disjunction</strong>: <code>;</code> means logical OR. <code>(a, b ; c)</code> tries <code>a, b</code> first, then <code>c</code>.</li>
+<li><strong>Negation as failure</strong>: <code>\+ Goal</code> succeeds when <code>Goal</code> has no solutions. Works with grouped goals: <code>\+ (beat(T, 1) ; beat(T, 3))</code>.</li>
+<li><strong>Grouping</strong>: Parentheses change precedence for disjunction/negation and arithmetic.</li>
+<li><strong>Infix comparisons</strong>: Use <code>&lt;</code>, <code>&gt;</code>, <code>=&lt;</code>, <code>&gt;=</code>, <code>=:=</code> (numeric equality), <code>=\=</code> (numeric inequality), and <code>=</code> (unification). Examples: <code>T &gt;= 4</code>, <code>Vel =:= 0.8</code>, <code>Note1 = Note2</code>.</li>
+<li><strong>Arithmetic expressions</strong>: <code>+</code>, <code>-</code>, <code>*</code>, <code>/</code> can appear inside arguments and in infix comparisons: <code>Vel = (A + B) / 2</code>, <code>T &lt; 8 - 0.5</code>.</li>
+<li><strong>Unification</strong>: <code>=</code> unifies terms (after evaluating arithmetic expressions). It can bind variables or check equality of structures.</li>
+<li><strong>Built-ins vs infix</strong>: Comparisons via infix operators replace <code>lt/gt/eq</code> in most cases. List/logic helpers (<code>within/3</code>, <code>distinct/1</code>, <code>cooldown/3</code>, etc.) remain as predicates.</li>
+<li><strong>Randomness/state</strong>: <code>prob/1</code>, <code>choose/2</code>, <code>pick/2</code>, <code>rand/3</code>, <code>randint/3</code> add variation. <code>cycle/2</code> and <code>cooldown/3</code> keep state across calls (reset by example change or reload).</li>
+<li><strong>Time</strong>: <code>T</code> is in beats. Use <code>beat/2</code>, <code>phase/3</code>, <code>every/2</code>, <code>euc/5</code>, <code>within/3</code> for rhythm. Scheduler swing/lookahead are handled automatically.</li>
+<li><strong>Comments</strong>: <code>%</code> starts a line comment (runs to newline).</li>
 </ul>
 <h2>Troubleshooting</h2>
 <ul>
