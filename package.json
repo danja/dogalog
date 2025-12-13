@@ -8,6 +8,8 @@
     "build": "vite build",
     "preview": "vite preview",
     "test": "vitest",
+    "test:ui": "vitest --ui",
+    "test:coverage": "vitest --coverage",
     "docs:html": "marked docs/manual.md -o docs/manual.html && marked docs/cheatsheet.md -o docs/cheatsheet.html"
   },
   "dependencies": {
@@ -20,9 +22,12 @@
     "@codemirror/view": "^6.34.1"
   },
   "devDependencies": {
+    "@vitest/coverage-v8": "^4.0.15",
+    "@vitest/ui": "^4.0.15",
     "jsdom": "^27.3.0",
     "marked": "^9.1.6",
     "vite": "^7.2.7",
+    "vite-plugin-pwa": "^1.2.0",
     "vitest": "^4.0.15"
   }
 }

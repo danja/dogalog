@@ -33,10 +33,10 @@ export class StateManager {
   /**
    * Get last trigger time for cooldown tracking
    * @param {string} key - Cooldown identifier
-   * @returns {number} Last trigger time (0 if not found)
+   * @returns {number|undefined} Last trigger time (undefined if not found)
    */
   getLastTrigger(key) {
-    return this.lastTriggers.get(key) ?? 0;
+    return this.lastTriggers.get(key);
   }
 
   /**
@@ -46,6 +46,28 @@ export class StateManager {
    */
   setLastTrigger(key, time) {
     this.lastTriggers.set(key, time);
+  }
+
+  /**
+   * Record a trigger event (alias for setLastTrigger)
+   * @param {string} key - Cooldown identifier
+   * @param {number} time - Current time in seconds
+   */
+  recordTrigger(key, time) {
+    this.setLastTrigger(key, time);
+  }
+
+  /**
+   * Check if enough time has passed since last trigger
+   * @param {string} key - Cooldown identifier
+   * @param {number} now - Current time in seconds
+   * @param {number} gap - Minimum gap between triggers
+   * @returns {boolean} True if trigger is allowed
+   */
+  canTrigger(key, now, gap) {
+    const last = this.getLastTrigger(key);
+    if (last === undefined) return true;
+    return (now - last) >= gap;
   }
 
   /**

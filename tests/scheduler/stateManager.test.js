@@ -51,8 +51,8 @@ describe('State Manager', () => {
   });
 
   describe('Cooldown State', () => {
-    it('returns 0 for new cooldown key', () => {
-      expect(stateManager.getLastTrigger('new-key')).toBe(0);
+    it('returns undefined for new cooldown key', () => {
+      expect(stateManager.getLastTrigger('new-key')).toBeUndefined();
     });
 
     it('stores and retrieves last trigger time', () => {
@@ -92,8 +92,8 @@ describe('State Manager', () => {
 
       stateManager.reset();
 
-      expect(stateManager.getLastTrigger('key1')).toBe(0);
-      expect(stateManager.getLastTrigger('key2')).toBe(0);
+      expect(stateManager.getLastTrigger('key1')).toBeUndefined();
+      expect(stateManager.getLastTrigger('key2')).toBeUndefined();
     });
 
     it('allows state to be rebuilt after reset', () => {
