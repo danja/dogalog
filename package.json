@@ -8,7 +8,7 @@
     "build": "vite build",
     "preview": "vite preview",
     "test": "vitest",
-    "docs:html": "marked docs/manual.md -o docs/manual.html && marked cheatsheet.md -o docs/cheatsheet.html"
+    "docs:html": "marked docs/manual.md -o docs/manual.html && marked docs/cheatsheet.md -o docs/cheatsheet.html"
   },
   "dependencies": {
     "@codemirror/autocomplete": "^6.18.0",

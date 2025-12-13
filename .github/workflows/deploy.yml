@@ -30,8 +30,6 @@ jobs:
         run: npm run docs:html
       - name: Build
         run: npm run build
-      - name: Dist
-        run: mkdir dist
       - name: Copy docs
         run: mkdir -p dist/docs && cp -r docs/. dist/docs/
       - name: Upload artifact
