@@ -29,4 +29,12 @@ textarea, pre, input, button, select { font: inherit; }
 .builtins-title { color:var(--muted); font-size:12px; padding-top:2px; }
 .builtins-grid { display:grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap:8px; flex:1; }
 footer { padding: 10px 14px; color: var(--muted); font-size: 12px; opacity:.9; }
+.validation-indicator { display:flex; align-items:center; gap:6px; padding:4px 8px; font-size:12px; }
+.validation-dot { width:8px; height:8px; border-radius:50%; transition:background 0.2s; }
+.validation-indicator[data-state="valid"] .validation-dot { background:var(--accent); }
+.validation-indicator[data-state="invalid"] .validation-dot { background:#ff6b6b; }
+.validation-indicator[data-state="evaluating"] .validation-dot { background:#ffd93d; animation:pulse 1s infinite; }
+.validation-message { color:var(--muted); }
+.validation-indicator[data-state="invalid"] .validation-message { color:#ff6b6b; }
+@keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
 @media (max-width: 980px) { main { grid-template-columns: 1fr; } }

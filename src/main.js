@@ -13,6 +13,9 @@ import { parseProgram } from './prolog/parser.js';
 import { createBuiltins } from './prolog/builtins.js';
 import { AudioEngine } from './audio/audioEngine.js';
 import { Scheduler } from './scheduler/scheduler.js';
+import { StateManager } from './scheduler/stateManager.js';
+import { LiveEvaluator } from './livecoding/liveEvaluator.js';
+import { ValidationIndicator } from './ui/validationIndicator.js';
 import { defaultProgram } from './ui/defaultProgram.js';
 import { examples } from './ui/examples.js';
 
@@ -22,6 +25,7 @@ const app = document.getElementById('app');
 app.innerHTML = `
   <header>
     <h1>Dogalog</h1>
+    <div id="validation-container"></div>
     <div class="controls">
       <label>BPM <input id="bpm" type="range" min="40" max="220" value="120"> <span id="bpmv">120</span></label>
       <label>Swing <input id="swing" type="range" min="0" max="0.25" step="0.005" value="0"> <span id="swingv">0.00</span></label>
@@ -106,7 +110,26 @@ const editorHost = document.getElementById('code-editor');
 
 const builtins = createBuiltins();
 const audio = new AudioEngine();
-const scheduler = new Scheduler({ audio, builtins });
+const stateManager = new StateManager();
+const scheduler = new Scheduler({ audio, builtins, stateManager });
+
+// Create validation indicator and add to DOM
+const validationIndicator = new ValidationIndicator();
+const validationContainer = document.getElementById('validation-container');
+validationContainer.appendChild(validationIndicator.getElement());
+
+// Create live evaluator
+const liveEvaluator = new LiveEvaluator({ scheduler, debounceMs: 300 });
+
+// Wire up live evaluator events to validation indicator
+liveEvaluator.on('validated', (result) => {
+  if (result.success) {
+    validationIndicator.setState('valid');
+    log(`[live] Loaded ${result.clauses.length} clauses.`);
+  } else {
+    validationIndicator.setState('invalid', result.error.message);
+  }
+});
 
 let editorView;
 
@@ -138,7 +161,14 @@ function makeEditor(doc) {
     ]),
     StreamLanguage.define(prologLanguage),
     EditorView.lineWrapping,
-    oneDark
+    oneDark,
+    // Live evaluation: trigger on document changes
+    EditorView.updateListener.of((update) => {
+      if (update.docChanged) {
+        const code = update.state.doc.toString();
+        liveEvaluator.onCodeChange(code);
+      }
+    })
   ];
   const state = EditorState.create({ doc, extensions });
   editorView = new EditorView({ state, parent: editorHost });
@@ -162,11 +192,12 @@ function evaluateProgram() {
     const text = getCode().trim();
     const normalized = text.endsWith('.') ? text : `${text}.`;
     const clauses = parseProgram(normalized);
-    if (builtins.reset) builtins.reset();
     scheduler.setProgram(clauses);
-    log(`[ok] Loaded ${clauses.length} clauses.`);
+    validationIndicator.setState('valid');
+    log(`[manual] Loaded ${clauses.length} clauses.`);
   } catch (error) {
     console.error(error);
+    validationIndicator.setState('invalid', error.message);
     log(`[parse error] ${error.message}`);
   }
 }
@@ -185,6 +216,7 @@ exampleSelect.addEventListener('change', () => {
   if (ex) {
     const wasRunning = Boolean(scheduler.interval);
     scheduler.stop();
+    scheduler.resetState(); // Reset state when loading a new example
     setCode(ex.code.trim());
     evaluateProgram();
     if (wasRunning) scheduler.start();

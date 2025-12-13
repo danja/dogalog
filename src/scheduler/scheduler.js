@@ -8,9 +8,10 @@ function swingAdjust(t, bpm, swingAmt) {
 }
 
 export class Scheduler {
-  constructor({ audio, builtins, bpm = 120, swing = 0, lookaheadMs = 80, gridBeats = 0.25 }) {
+  constructor({ audio, builtins, stateManager, bpm = 120, swing = 0, lookaheadMs = 80, gridBeats = 0.25 }) {
     this.audio = audio;
     this.builtins = builtins;
+    this.stateManager = stateManager;
     this.bpm = bpm;
     this.swing = swing;
     this.lookaheadMs = lookaheadMs;
@@ -20,6 +21,12 @@ export class Scheduler {
   }
 
   setProgram(clauses) { this.program = clauses; }
+
+  resetState() {
+    if (this.stateManager) {
+      this.stateManager.reset();
+    }
+  }
 
   start() {
     this.audio.init();
@@ -40,7 +47,10 @@ export class Scheduler {
   }
 
   queryAndSchedule(t) {
-    const ctx = { bpm: this.bpm };
+    const ctx = {
+      bpm: this.bpm,
+      stateManager: this.stateManager
+    };
     const goal = { type:'compound', f:'event', args:[ {type:'var',name:'Voice'}, {type:'var',name:'Pitch'}, {type:'var',name:'Vel'}, {type:'num', value: t } ] };
     for (const env of resolveGoals([goal], {}, this.program, ctx, this.builtins)) {
       const voice = termToString(substTerm({type:'var',name:'Voice'}, env));

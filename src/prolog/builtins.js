@@ -50,8 +50,6 @@ function stepIndexAtTime(T, N, B, bpm) {
 }
 
 export function createBuiltins() {
-  const cycleState = new Map();
-
   const builtins = {
     every: (args, env, ctx) => {
       const T = evalNumber(args[0], env);
@@ -233,20 +231,21 @@ export function createBuiltins() {
       }
       return outs;
     },
-    cycle: (args, env) => {
+    cycle: (args, env, ctx) => {
       const list = evalList(args[0], env);
       const target = args[1];
       if (target.type !== 'var' || list.length === 0) return [];
       const key = JSON.stringify(list);
-      const idx = cycleState.get(key) ?? 0;
-      const nextIdx = (idx + 1) % list.length;
-      cycleState.set(key, nextIdx);
-      const e = unify(target, list[idx], env);
+
+      if (ctx.stateManager) {
+        const idx = ctx.stateManager.incrementCycle(key, list.length);
+        const e = unify(target, list[idx], env);
+        return e ? [e] : [];
+      }
+
+      // Fallback if no stateManager (shouldn't happen in normal usage)
+      const e = unify(target, list[0], env);
       return e ? [e] : [];
-    },
-    reset: () => {
-      cycleState.clear();
-      return [];
     }
   };
 

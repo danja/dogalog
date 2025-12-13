@@ -1,10 +1,15 @@
 import { beforeEach, afterEach, describe, expect, it, vi } from 'vitest';
 import { createBuiltins } from '../../src/prolog/builtins.js';
+import { StateManager } from '../../src/scheduler/stateManager.js';
 
 const builtins = createBuiltins();
+const stateManager = new StateManager();
 
 let originalRandom;
-beforeEach(() => { originalRandom = Math.random; });
+beforeEach(() => {
+  originalRandom = Math.random;
+  stateManager.reset();
+});
 afterEach(() => { Math.random = originalRandom; });
 
 describe('builtins.rand', () => {
@@ -73,8 +78,9 @@ describe('builtins.cycle', () => {
   it('steps through a list deterministically across calls', () => {
     const list = { type:'list', items:[{type:'num', value:1}, {type:'num', value:2}] };
     const target = { type:'var', name:'X' };
-    const first = builtins.cycle([list, target], {});
-    const second = builtins.cycle([list, target], {});
+    const ctx = { stateManager };
+    const first = builtins.cycle([list, target], {}, ctx);
+    const second = builtins.cycle([list, target], {}, ctx);
     expect(first[0].X.value).toBe(1);
     expect(second[0].X.value).toBe(2);
   });
