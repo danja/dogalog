@@ -1,0 +1,87 @@
+<h1>Dogalog Manual</h1>
+<h2>What is this?</h2>
+<p>A tiny, Prolog-ish livecoding playground in the browser. You write facts and rules; the engine queries <code>event(Voice, Pitch, Vel, T)</code> every step and plays matching sounds.</p>
+<h2>Getting started</h2>
+<ol>
+<li>Open the app (GitHub Pages link in the README).</li>
+<li>Click once on the page, then press <strong>Start</strong> to unlock audio.</li>
+<li>Edit rules in the editor — changes load automatically as you type.</li>
+<li>Use <strong>BPM</strong>, <strong>Swing</strong>, and <strong>Lookahead</strong> sliders to tweak feel and timing.</li>
+</ol>
+<h2>Core syntax</h2>
+<ul>
+<li>Facts end with <code>.</code>: <code>kick(t0).</code></li>
+<li>Rules: <code>head :- goal1, goal2.</code></li>
+<li>Variables start uppercase or <code>_</code>; atoms start lowercase.</li>
+<li>Lists: <code>[a, b, c]</code>.</li>
+<li>Comments: <code>% comment text</code>.</li>
+</ul>
+<h2>Built-ins (music + constraints)</h2>
+<ul>
+<li>Rhythm grids: <code>beat(T, N)</code>, <code>phase(T, N, K)</code>, <code>every(T, Step)</code></li>
+<li>Probability: <code>prob(P)</code></li>
+<li>Lists/choices: <code>choose(List, X)</code>, <code>pick(List, X)</code>, <code>cycle(List, X)</code>, <code>range(Start, End, Step, X)</code></li>
+<li>Random: <code>rand(Min, Max, X)</code>, <code>randint(Min, Max, X)</code></li>
+<li>Math/relations: <code>eq(A,B)</code>, <code>add(A,B,C)</code>, <code>lt(A,B)</code>, <code>gt(A,B)</code></li>
+<li>Constraints: <code>within(T, Start, End)</code>, <code>distinct(List)</code>, <code>cooldown(Now, Last, Gap)</code></li>
+<li>Euclidean: <code>euc(T, K, N, B, R)</code></li>
+<li>Pitch helpers: <code>scale(Root, Mode, Degree, Oct, Midi)</code>, <code>chord(Root, Quality, Oct, Midi)</code>, <code>transpose(Note, Offset, Out)</code>, <code>rotate(List, Shift, OutList)</code></li>
+</ul>
+<h2>Instruments (voices)</h2>
+<ul>
+<li><code>kick</code>, <code>snare</code>, <code>hat</code>, <code>sine</code> (Pitch is MIDI for <code>sine</code>).</li>
+</ul>
+<h2>Examples</h2>
+<pre><code class="language-prolog">% Drums
+kik(T) :- euc(T, 4, 16, 4, 0).
+snr(T) :- euc(T, 2, 16, 4, 4).
+hat(T) :- euc(T,11, 16, 4, 0).
+
+event(kick, 36, 0.95, T) :- kik(T).
+event(snare, 38, 0.85, T) :- snr(T).
+event(hat, 42, 0.25, T) :- hat(T).
+
+% Bass: choose notes every half beat
+bass(T, N) :- every(T,0.5), pick([40,43,47,48], N).
+event(sine, N, 0.55, T) :- bass(T, N).
+
+% Lead using scale degrees
+lead(T, N) :- every(T,0.25), scale(60, ionian, 1, 0, N).
+lead(T, N) :- every(T,0.25), scale(60, ionian, 3, 0, N).
+lead(T, N) :- every(T,0.25), scale(60, ionian, 5, 0, N).
+event(sine, N, 0.4, T) :- lead(T, N).
+
+% Recursive loop over time (bounded)
+loop_hats(T, End) :-
+  T =&lt; End,
+  event(hat, 42, 0.25, T),
+  add(T, 0.125, T1),
+  loop_hats(T1, End).
+
+start_loop(T0) :-
+  event(kick, 36, 0.95, T0),
+  add(T0, 0.125, Tstart),
+  add(T0, 2.0, Tend),
+  loop_hats(Tstart, Tend).
+
+% Recursive walk through a list (motif)
+play_seq(T, Step, [N|Ns]) :-
+  event(sine, N, 0.5, T),
+  add(T, Step, T1),
+  play_seq(T1, Step, Ns).
+play_seq(_, _, []).
+motif(T) :- play_seq(T, 0.25, [60,62,65,67]).
+</code></pre>
+<h2>Tips</h2>
+<ul>
+<li>Every rule ends with <code>.</code></li>
+<li>Combine deterministic grids (<code>beat/phase/every</code>) with <code>prob</code> for variation.</li>
+<li><code>cycle</code> for motifs, <code>pick/rand</code> for surprise, <code>euc</code> for quick grooves.</li>
+<li>If timing is off, reduce Lookahead; add Swing for feel.</li>
+</ul>
+<h2>Troubleshooting</h2>
+<ul>
+<li>No sound: click the page, press <strong>Start</strong>, ensure device volume, disable mute/silent.</li>
+<li>Parse errors: check missing periods or mismatched parens/brackets.</li>
+<li>Network/Pages: hard refresh or disable old service workers if a stale cached build interferes.</li>
+</ul>

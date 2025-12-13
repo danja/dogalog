@@ -10,7 +10,7 @@
     "test": "vitest",
     "test:ui": "vitest --ui",
     "test:coverage": "vitest --coverage",
-    "docs:html": "marked docs/manual.md -o docs/manual.html && marked docs/cheatsheet.md -o docs/cheatsheet.html"
+    "docs:html": "mkdir -p public/docs && marked docs/manual.md -o public/docs/manual.html && marked docs/cheatsheet.md -o public/docs/cheatsheet.html"
   },
   "dependencies": {
     "@codemirror/autocomplete": "^6.18.0",

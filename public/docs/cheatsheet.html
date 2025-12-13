@@ -1,0 +1,65 @@
+<h1>Prolog-ish Livecoding Cheatsheet</h1>
+<h2>Core shape</h2>
+<ul>
+<li>Facts: <code>kick(t0).</code> — things that are simply true.</li>
+<li>Rules: <code>head :- goal1, goal2.</code> — head is true if all goals are true.</li>
+<li>Queries: ask for solutions to a goal; here the engine repeatedly asks <code>event(Voice, Pitch, Vel, T).</code></li>
+<li>Variables: Uppercase or <code>_</code> start, unify with anything. Atoms: lowercase. Numbers: decimals.</li>
+<li>Lists: <code>[a, b, c]</code>.</li>
+</ul>
+<h2>Built-ins (music-focused)</h2>
+<ul>
+<li><code>beat(T, N)</code> – true on N subdivisions per beat.</li>
+<li><code>phase(T, N, K)</code> – true on step K within N steps per bar.</li>
+<li><code>every(T, Step)</code> – true on a regular grid of beats (Step in beats).</li>
+<li><code>prob(P)</code> – passes with probability P (0..1).</li>
+<li><code>choose(List, X)</code> – nondeterministically unify X with each item.</li>
+<li><code>pick(List, X)</code> – pick one random element.</li>
+<li><code>cycle(List, X)</code> – step through list items across calls.</li>
+<li><code>range(Start, End, Step, X)</code> – count from Start to End by Step.</li>
+<li><code>rand(Min, Max, X)</code> / <code>randint(Min, Max, X)</code> – random float/int in range.</li>
+<li><code>eq(A,B)</code> – succeeds if A deep-equals B.</li>
+<li><code>add(A,B,C)</code> – C = A+B.</li>
+<li><code>euc(T, K, N, B, R)</code> – Euclidean rhythm, K hits over N steps per bar, B beats/bar, rotation R.</li>
+<li><code>scale(Root, Mode, Degree, Oct, Midi)</code> – map a scale degree to MIDI.</li>
+<li><code>chord(Root, Quality, Oct, Midi)</code> – emit chord tones as MIDI numbers.</li>
+<li><code>transpose(Note, Offset, Out)</code> – add semitones.</li>
+<li><code>rotate(List, Shift, OutList)</code> – rotate a list.</li>
+</ul>
+<h2>Event mapping (default)</h2>
+<ul>
+<li>The scheduler asks <code>event(Voice, Pitch, Vel, T)</code> every grid tick.</li>
+<li>Voices: <code>kick</code>, <code>snare</code>, <code>hat</code>, <code>sine</code> (Pitch is MIDI for <code>sine</code>).</li>
+</ul>
+<h2>Mini patterns</h2>
+<pre><code class="language-prolog">% Four-on-the-floor kick
+event(kick, 36, 0.95, T) :- euc(T, 4, 16, 4, 0).
+
+% Backbeat snare and busy hats
+event(snare, 38, 0.85, T) :- euc(T, 2, 16, 4, 4).
+event(hat,   42, 0.25, T) :- euc(T,11, 16, 4, 0).
+
+% Probabilistic ghost hats
+event(hat, 46, 0.18, T) :- every(T, 0.125), prob(0.3).
+
+% Bass: pick from a list every half beat
+bass(T, N) :- every(T,0.5), pick([40,43,47,48], N).
+event(sine, N, 0.55, T) :- bass(T, N).
+
+% Scale lead (major)
+lead(T, N) :- every(T,0.25), scale(60, ionian, 1, 0, N).
+lead(T, N) :- every(T,0.25), scale(60, ionian, 3, 0, N).
+lead(T, N) :- every(T,0.25), scale(60, ionian, 5, 0, N).
+event(sine, N, 0.4, T) :- lead(T, N).
+
+% Chord arp (minor triad)
+arp(T, N) :- every(T,0.5), chord(57, min, 0, N).
+event(sine, N, 0.5, T) :- arp(T, N).
+</code></pre>
+<h2>Tips</h2>
+<ul>
+<li>Every rule ends with a period <code>.</code></li>
+<li>Mix deterministic grids (<code>beat/phase/every</code>) with <code>prob</code> for variation.</li>
+<li>Use <code>cycle</code> for predictable motifs, <code>pick/rand</code> for surprise, and <code>euc</code> for quick grooves.</li>
+<li>Adjust Swing/Lookahead in the UI to change feel and scheduling tightness.</li>
+</ul>
