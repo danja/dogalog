@@ -22,6 +22,8 @@ import { createAppTemplate } from './ui/template.js';
 import { createControls } from './ui/controls.js';
 import { setupEventHandlers } from './ui/eventHandlers.js';
 import { defaults } from './config/defaults.js';
+import { TutorialManager } from './tutorial/tutorialManager.js';
+import { TutorialOverlay } from './tutorial/tutorialOverlay.js';
 
 /**
  * Initialize and start the Dogalog application
@@ -135,6 +137,23 @@ export function initializeApp({ manualLink, examples, defaultProgram }) {
     onStop: handlers.onStop,
     onEval: handlers.onEval
   });
+
+  // Initialize tutorial system
+  const tutorialManager = new TutorialManager();
+  const tutorialOverlay = new TutorialOverlay(tutorialManager, setCode);
+  app.appendChild(tutorialOverlay.getElement());
+
+  // Tutorial button handler
+  const tutorialBtn = document.getElementById('tutorial-btn');
+  if (tutorialBtn) {
+    tutorialBtn.addEventListener('click', () => {
+      if (!tutorialManager.hasStarted()) {
+        tutorialManager.start();
+      } else {
+        tutorialOverlay.toggle();
+      }
+    });
+  }
 
   // Initialize editor and load default program
   createEditor(defaultProgram.trim());

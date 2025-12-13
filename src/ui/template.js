@@ -25,6 +25,13 @@ export function createAppTemplate({ manualLink, examples }) {
   validationContainer.id = 'validation-container';
   header.appendChild(validationContainer);
 
+  // Tutorial button
+  const tutorialBtn = document.createElement('button');
+  tutorialBtn.id = 'tutorial-btn';
+  tutorialBtn.className = 'btn tutorial-btn';
+  tutorialBtn.textContent = 'Tutorial';
+  header.appendChild(tutorialBtn);
+
   // Controls container
   const controlsDiv = document.createElement('div');
   controlsDiv.className = 'controls';
