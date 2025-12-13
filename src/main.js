@@ -21,7 +21,7 @@ const manualLink = `${import.meta.env.BASE_URL}docs/manual.html`;
 const app = document.getElementById('app');
 app.innerHTML = `
   <header>
-    <h1>Prolog-like Livecoding Music (Vanilla JS + WebAudio)</h1>
+    <h1>Dogalog</h1>
     <div class="controls">
       <label>BPM <input id="bpm" type="range" min="40" max="220" value="120"> <span id="bpmv">120</span></label>
       <label>Swing <input id="swing" type="range" min="0" max="0.25" step="0.005" value="0"> <span id="swingv">0.00</span></label>
