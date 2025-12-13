@@ -9,7 +9,6 @@ import { createSlider } from './components/slider.js';
  * @param {Object} handlers - Event handlers
  * @param {Function} handlers.onStart - Start button handler
  * @param {Function} handlers.onStop - Stop button handler
- * @param {Function} handlers.onEval - Evaluate button handler
  * @param {Function} handlers.onBpmChange - BPM change handler
  * @param {Function} handlers.onSwingChange - Swing change handler
  * @param {Function} handlers.onLookaheadChange - Lookahead change handler
@@ -19,7 +18,6 @@ import { createSlider } from './components/slider.js';
 export function createControls({
   onStart,
   onStop,
-  onEval,
   onBpmChange,
   onSwingChange,
   onLookaheadChange,
@@ -97,12 +95,4 @@ export function createControls({
     onClick: onStop
   });
   container.appendChild(stopBtn);
-
-  // Evaluate button
-  const evalBtn = createButton({
-    label: 'Evaluate Rules',
-    id: 'eval',
-    onClick: onEval
-  });
-  container.appendChild(evalBtn);
 }

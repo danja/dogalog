@@ -17,11 +17,18 @@ export default defineConfig({
         name: 'Dogalog - Prolog Livecoding',
         short_name: 'Dogalog',
         description: 'Realtime Prolog-based livecoding music environment',
+        form_factor: 'wide',
         theme_color: '#7ee787',
         background_color: '#0b0c10',
         display: 'standalone',
         start_url: './',
         scope: './',
+        protocol_handlers: [
+          {
+            protocol: 'web+dogalog',
+            url: './?program=%s'
+          }
+        ],
         icons: [
           {
             src: 'icons/icon-192.png',

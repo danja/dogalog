@@ -5,9 +5,9 @@
 import { tutorialSteps } from './steps.js';
 
 export class TutorialOverlay {
-  constructor(tutorialManager, setCode) {
+  constructor(tutorialManager, applyCode) {
     this.manager = tutorialManager;
-    this.setCode = setCode;
+    this.applyCode = applyCode;
     this.element = null;
     this.visible = false;
 
@@ -160,7 +160,7 @@ export class TutorialOverlay {
   loadStepCode() {
     const step = tutorialSteps[this.manager.getCurrentStep()];
     if (step && step.code) {
-      this.setCode(step.code.trim());
+      this.applyCode(step.code.trim());
     }
   }
 

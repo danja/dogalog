@@ -63,7 +63,7 @@ The Prolog engine uses ES6 generators for backtracking. `resolveGoals()` yields 
 ### Data Flow
 
 1. User writes Prolog-like rules in the editor
-2. "Evaluate Rules" button parses text into clauses via `parseProgram()`
+2. Editor changes auto-parse into clauses (debounced live evaluation)
 3. "Start" button begins scheduler interval
 4. Scheduler queries `event/4` for each time step in lookahead window
 5. `resolveGoals()` backtracks through clauses and built-ins, yielding all matching events

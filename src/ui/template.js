@@ -32,6 +32,14 @@ export function createAppTemplate({ manualLink, examples }) {
   tutorialBtn.textContent = 'Tutorial';
   header.appendChild(tutorialBtn);
 
+  const manualBtn = document.createElement('a');
+  manualBtn.className = 'btn';
+  manualBtn.href = manualLink;
+  manualBtn.target = '_blank';
+  manualBtn.rel = 'noreferrer';
+  manualBtn.textContent = 'Manual';
+  header.appendChild(manualBtn);
+
   // Controls container
   const controlsDiv = document.createElement('div');
   controlsDiv.className = 'controls';
@@ -71,14 +79,6 @@ export function createAppTemplate({ manualLink, examples }) {
   });
   exampleLabel.appendChild(exampleSelect);
   exampleBar.appendChild(exampleLabel);
-
-  const manualBtn = document.createElement('a');
-  manualBtn.className = 'btn';
-  manualBtn.href = manualLink;
-  manualBtn.target = '_blank';
-  manualBtn.rel = 'noreferrer';
-  manualBtn.textContent = 'Manual';
-  exampleBar.appendChild(manualBtn);
 
   leftPanel.appendChild(exampleBar);
 
@@ -120,7 +120,7 @@ export function createAppTemplate({ manualLink, examples }) {
 
   // Footer
   const footer = document.createElement('footer');
-  footer.innerHTML = 'Edit rules then press <em>Evaluate Rules</em>. The engine asks <code>event/4</code> every step and plays any matching results.';
+  footer.innerHTML = 'Edit rules and they reload automatically. The engine asks <code>event/4</code> every step and plays any matching results.';
   fragment.appendChild(footer);
 
   return fragment;

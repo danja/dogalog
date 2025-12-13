@@ -21,16 +21,15 @@ describe('Controls Panel', () => {
       start: vi.fn()
     };
 
-    // Mock handlers
-    handlers = {
-      onStart: vi.fn(),
-      onStop: vi.fn(),
-      onEval: vi.fn(),
-      onBpmChange: vi.fn(),
-      onSwingChange: vi.fn(),
-      onLookaheadChange: vi.fn()
-    };
-  });
+  // Mock handlers
+  handlers = {
+    onStart: vi.fn(),
+    onStop: vi.fn(),
+    onBpmChange: vi.fn(),
+    onSwingChange: vi.fn(),
+    onLookaheadChange: vi.fn()
+  };
+});
 
   afterEach(() => {
     document.body.removeChild(container);
@@ -83,7 +82,7 @@ describe('Controls Panel', () => {
     expect(lookValue.textContent).toBe('80ms');
   });
 
-  it('creates start, stop, and evaluate buttons', () => {
+  it('creates start and stop buttons', () => {
     createControls({ scheduler, ...handlers });
 
     const startBtn = container.querySelector('#start');
@@ -95,10 +94,6 @@ describe('Controls Panel', () => {
     expect(stopBtn).toBeTruthy();
     expect(stopBtn.textContent).toBe('Stop');
     expect(stopBtn.classList.contains('danger')).toBe(true);
-
-    const evalBtn = container.querySelector('#eval');
-    expect(evalBtn).toBeTruthy();
-    expect(evalBtn.textContent).toBe('Evaluate Rules');
   });
 
   it('updates scheduler BPM on slider change', () => {
@@ -171,22 +166,12 @@ describe('Controls Panel', () => {
     expect(handlers.onStop).toHaveBeenCalledTimes(1);
   });
 
-  it('calls onEval when evaluate button clicked', () => {
-    createControls({ scheduler, ...handlers });
-
-    const evalBtn = container.querySelector('#eval');
-    evalBtn.click();
-
-    expect(handlers.onEval).toHaveBeenCalledTimes(1);
-  });
-
   it('works without optional change handlers', () => {
     expect(() => {
       createControls({
         scheduler,
         onStart: handlers.onStart,
-        onStop: handlers.onStop,
-        onEval: handlers.onEval
+        onStop: handlers.onStop
       });
     }).not.toThrow();
   });

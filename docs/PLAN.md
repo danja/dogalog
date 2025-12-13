@@ -29,7 +29,6 @@ This plan addresses three major compliance gaps between the current Dogalog impl
 **Modify**: `src/main.js` (lines 113-145)
 - Add EditorView.updateListener extension
 - Wire to LiveEvaluator instance
-- Keep manual "Evaluate" button for explicit control
 
 **Create**: `src/ui/validationIndicator.js`
 - Visual feedback (green/red indicator) for code validation state

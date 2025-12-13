@@ -6,7 +6,7 @@ A tiny, Prolog-ish livecoding playground in the browser. You write facts and rul
 ## Getting started
 1. Open the app (GitHub Pages link in the README).
 2. Click once on the page, then press **Start** to unlock audio.
-3. Edit rules in the editor, then press **Evaluate Rules** to load them.
+3. Edit rules in the editor — changes load automatically as you type.
 4. Use **BPM**, **Swing**, and **Lookahead** sliders to tweak feel and timing.
 
 ## Core syntax

@@ -134,13 +134,18 @@ export function initializeApp({ manualLink, examples, defaultProgram }) {
   createControls({
     scheduler,
     onStart: handlers.onStart,
-    onStop: handlers.onStop,
-    onEval: handlers.onEval
+    onStop: handlers.onStop
   });
 
   // Initialize tutorial system
   const tutorialManager = new TutorialManager();
-  const tutorialOverlay = new TutorialOverlay(tutorialManager, setCode);
+  const applyCode = (text) => {
+    const trimmed = text.trim();
+    setCode(trimmed);
+    liveEvaluator.evaluate(trimmed);
+  };
+
+  const tutorialOverlay = new TutorialOverlay(tutorialManager, applyCode);
   app.appendChild(tutorialOverlay.getElement());
 
   // Tutorial button handler
@@ -158,5 +163,5 @@ export function initializeApp({ manualLink, examples, defaultProgram }) {
   // Initialize editor and load default program
   createEditor(defaultProgram.trim());
   exampleSelect.value = examples[0]?.id ?? '';
-  handlers.onEval();
+  liveEvaluator.evaluate(getCode());
 }

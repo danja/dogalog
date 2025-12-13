@@ -149,7 +149,7 @@ describe('App Template', () => {
 
     const footer = container.querySelector('footer');
     expect(footer).toBeTruthy();
-    expect(footer.innerHTML).toContain('Evaluate Rules');
+    expect(footer.innerHTML).toContain('reload automatically');
     expect(footer.innerHTML).toContain('event/4');
   });
 });
