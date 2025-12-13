@@ -10,7 +10,7 @@ import { oneDark } from '@codemirror/theme-one-dark';
 import { prologLanguage } from './ui/prologLanguage.js';
 
 import { parseProgram } from './prolog/parser.js';
-import { createBuiltins } from './prolog/builtins.js';
+import { createBuiltins } from './prolog/builtins/index.js';
 import { AudioEngine } from './audio/audioEngine.js';
 import { Scheduler } from './scheduler/scheduler.js';
 import { StateManager } from './scheduler/stateManager.js';

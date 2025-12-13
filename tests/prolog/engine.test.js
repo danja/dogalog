@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { parseProgram } from '../../src/prolog/parser.js';
-import { createBuiltins } from '../../src/prolog/builtins.js';
+import { createBuiltins } from '../../src/prolog/builtins/index.js';
 import { resolveGoals } from '../../src/prolog/resolution.js';
 import { substTerm } from '../../src/prolog/terms.js';
 

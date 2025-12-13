@@ -1,6 +1,6 @@
 import { describe, expect, it, vi, beforeEach, afterEach } from 'vitest';
 import { Scheduler } from '../../src/scheduler/scheduler.js';
-import { createBuiltins } from '../../src/prolog/builtins.js';
+import { createBuiltins } from '../../src/prolog/builtins/index.js';
 import { parseProgram } from '../../src/prolog/parser.js';
 import { defaultProgram } from '../../src/ui/defaultProgram.js';
 

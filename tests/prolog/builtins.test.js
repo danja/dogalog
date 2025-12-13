@@ -1,5 +1,5 @@
 import { beforeEach, afterEach, describe, expect, it, vi } from 'vitest';
-import { createBuiltins } from '../../src/prolog/builtins.js';
+import { createBuiltins } from '../../src/prolog/builtins/index.js';
 import { StateManager } from '../../src/scheduler/stateManager.js';
 
 const builtins = createBuiltins();
