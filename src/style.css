@@ -190,7 +190,7 @@ main {
 
 .controls-grid {
   display: grid;
-  grid-template-columns: minmax(180px, 220px) auto minmax(160px, 1fr) auto auto;
+  grid-template-columns: auto minmax(140px, 200px) minmax(160px, 1fr) auto minmax(180px, 220px);
   align-items: center;
   gap: var(--spacing-xs);
   width: 100%;
@@ -444,9 +444,39 @@ main {
 footer {
   padding: 10px var(--spacing-md);
   color: var(--muted);
-  font-size: var(--font-size-small);
+  font-size: var(--font-size-base);
   opacity: 0.9;
   text-align: center;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.footer-meta {
+  display: flex;
+  justify-content: center;
+  gap: 6px;
+  flex-wrap: wrap;
+  font-weight: 600;
+}
+
+.footer-meta a {
+  color: var(--muted);
+  text-decoration: none;
+}
+
+.footer-meta a:hover,
+.footer-meta a:focus {
+  color: var(--accent);
+  text-decoration: underline;
+}
+
+.layout-note {
+  padding: 8px var(--spacing-md);
+  color: var(--muted);
+  font-size: var(--font-size-small);
+  text-align: center;
+  border-bottom: 1px solid var(--border);
 }
 
 /* Animations */

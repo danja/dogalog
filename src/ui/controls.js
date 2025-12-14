@@ -45,8 +45,8 @@ export function createControls({
 
   const linkGroup = document.createElement('div');
   linkGroup.className = 'control-links';
-  linkGroup.style.gridRow = '1 / span 3';
-  linkGroup.style.gridColumn = '1';
+  linkGroup.style.gridRow = '1 / span 4';
+  linkGroup.style.gridColumn = '5';
 
   if (links.tutorialLink) {
     const tutorialBtn = document.createElement('a');
@@ -92,7 +92,7 @@ export function createControls({
       if (onBpmChange) onBpmChange(event);
     }
   });
-  placeSliderRow(bpmSlider, 1);
+  placeSliderRow(bpmSlider, 2);
   grid.appendChild(bpmSlider.labelEl);
   grid.appendChild(bpmSlider.sliderEl);
   grid.appendChild(bpmSlider.valueEl);
@@ -112,7 +112,7 @@ export function createControls({
       if (onSwingChange) onSwingChange(event);
     }
   });
-  placeSliderRow(swingSlider, 2);
+  placeSliderRow(swingSlider, 3);
   grid.appendChild(swingSlider.labelEl);
   grid.appendChild(swingSlider.sliderEl);
   grid.appendChild(swingSlider.valueEl);
@@ -135,15 +135,15 @@ export function createControls({
       if (onLookaheadChange) onLookaheadChange(event);
     }
   });
-  placeSliderRow(lookaheadSlider, 3);
+  placeSliderRow(lookaheadSlider, 4);
   grid.appendChild(lookaheadSlider.labelEl);
   grid.appendChild(lookaheadSlider.sliderEl);
   grid.appendChild(lookaheadSlider.valueEl);
 
   const actions = document.createElement('div');
   actions.className = 'control-actions';
-  actions.style.gridRow = '1 / span 3';
-  actions.style.gridColumn = '5';
+  actions.style.gridRow = '1 / span 4';
+  actions.style.gridColumn = '1';
 
   // Start button
   const startBtn = createButton({

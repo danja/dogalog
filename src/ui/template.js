@@ -27,6 +27,12 @@ export function createAppTemplate({ examples }) {
 
   fragment.appendChild(header);
 
+  // Instruction note above main columns
+  const layoutNote = document.createElement('div');
+  layoutNote.className = 'layout-note';
+  layoutNote.innerHTML = 'Edit rules and they reload automatically. The engine asks <code>event/4</code> every step and plays any matching results.';
+  fragment.appendChild(layoutNote);
+
   // Main content
   const main = document.createElement('main');
 
@@ -105,7 +111,28 @@ export function createAppTemplate({ examples }) {
 
   // Footer
   const footer = document.createElement('footer');
-  footer.innerHTML = 'Edit rules and they reload automatically. The engine asks <code>event/4</code> every step and plays any matching results.';
+  const footerMeta = document.createElement('div');
+  footerMeta.className = 'footer-meta';
+
+  const srcLink = document.createElement('a');
+  srcLink.href = 'https://github.com/danja/dogalog';
+  srcLink.target = '_blank';
+  srcLink.rel = 'noreferrer';
+  srcLink.textContent = 'Source';
+  footerMeta.appendChild(srcLink);
+
+  const license = document.createElement('span');
+  license.textContent = ' · MIT License · ';
+  footerMeta.appendChild(license);
+
+  const author = document.createElement('a');
+  author.href = 'https://danny.ayers.name';
+  author.target = '_blank';
+  author.rel = 'noreferrer';
+  author.textContent = '(c) Danny Ayers 2025';
+  footerMeta.appendChild(author);
+
+  footer.appendChild(footerMeta);
   fragment.appendChild(footer);
 
   return fragment;

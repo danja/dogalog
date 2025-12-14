@@ -138,7 +138,7 @@ describe('App Template', () => {
 
     const footer = container.querySelector('footer');
     expect(footer).toBeTruthy();
-    expect(footer.innerHTML).toContain('reload automatically');
-    expect(footer.innerHTML).toContain('event/4');
+    expect(footer.innerHTML).toContain('Source');
+    expect(footer.innerHTML).toContain('MIT License');
   });
 });

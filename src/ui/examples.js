@@ -268,15 +268,15 @@ bass_note(N) :- cycle([40, 43, 38, 45, 43, 40, 47, 43], N).
 bass(T, N) :- every(T, 0.5), bass_note(N), after_bars(T, 2), \\+ break_window(T).
 bass(T, N2) :- beat(T, 1), bass_note(N), transpose(N, 12, N2), prob(0.2), after_bars(T, 5), \\+ break_window(T).
 
-% --- Arp (sequential, one note per tick) ---
+% --- Arp (sequential, offset to avoid stacking) ---
 arp_seq([57, 60, 64, 60, 62, 69, 64, 60]).
 arp_note(N) :- arp_seq(L), cycle(L, N).
-arp(T, N) :- every(T, 0.25), arp_note(N), after_bars(T, 4), \\+ break_window(T).
+arp(T, N) :- every(T, 0.5), phase(T, 2, 1), arp_note(N), after_bars(T, 4), \\+ break_window(T).
 
-% --- Haunting lead motif (monophonic cycle) ---
+% --- Haunting lead motif (monophonic cycle, later entrance) ---
 lead_seq([72, 74, 76, 74, 72, 71, 69, 67]).
 lead_note(N) :- lead_seq(L), cycle(L, N).
-lead(T, N) :- every(T, 0.125), lead_note(N), prob(0.55), after_bars(T, 4), \\+ break_window(T).
+lead(T, N) :- every(T, 0.25), phase(T, 4, 2), lead_note(N), prob(0.45), after_bars(T, 6), \\+ break_window(T).
 
 % --- Events and layer gating ---
 event(kick, 36, 0.95, T) :- kik(T), \\+ break_window(T).
