@@ -14,6 +14,7 @@
   --code-bg: #0c1017;
   --panel-header-bg: #0e1218;
   --example-bar-bg: #0f131a;
+  --example-highlight: #46d1ff;
   --select-bg: #0b0f16;
 
   /* Touch-friendly sizing */
@@ -324,27 +325,41 @@ main {
   align-items: center;
   gap: var(--spacing-xs);
   padding: var(--spacing-xs) var(--spacing-sm);
-  border-bottom: 1px solid var(--border);
-  background: var(--example-bar-bg);
+  border: 1px solid var(--example-highlight);
+  background: linear-gradient(135deg, var(--example-bar-bg), #0b1723);
+  border-radius: 10px;
+  box-shadow: 0 0 0 1px rgba(70, 209, 255, 0.35), 0 10px 24px rgba(0, 0, 0, 0.35);
   flex-wrap: wrap;
 }
 
 .example-bar label {
-  color: var(--muted);
+  color: var(--example-highlight);
   font-size: var(--font-size-small);
+  font-weight: 700;
   display: flex;
   align-items: center;
   gap: 6px;
 }
 
 .example-bar select {
-  background: var(--select-bg);
+  background: #0b1d2c;
   color: var(--ink);
-  border: 1px solid var(--border);
-  border-radius: 8px;
-  padding: 8px;
+  border: 2px solid var(--example-highlight);
+  border-radius: 10px;
+  padding: 10px 12px;
   min-height: var(--touch-target-min);
   font: inherit;
+  font-weight: 700;
+  box-shadow: 0 6px 16px rgba(70, 209, 255, 0.2);
+  transition: border-color 0.2s, box-shadow 0.2s, transform 0.1s;
+}
+
+.example-bar select:focus,
+.example-bar select:hover {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 2px rgba(126, 231, 135, 0.45), 0 10px 22px rgba(126, 231, 135, 0.25);
+  outline: none;
+  transform: translateY(-1px);
 }
 
 /* Log */
