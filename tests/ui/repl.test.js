@@ -174,5 +174,11 @@ describe('REPL', () => {
       repl.navigateHistory(-1); // Try to go before first
       expect(repl.historyIndex).toBe(0);
     });
+
+    it('should allow programmatic query execution via helper', () => {
+      repl.executeQueryFromText('kik(0.5).');
+      expect(repl.history).toContain('kik(0.5).');
+      expect(repl.input.value).toBe(''); // cleared after execution
+    });
   });
 });

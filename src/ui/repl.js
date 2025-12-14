@@ -95,6 +95,12 @@ export class REPL {
     }
   }
 
+  executeQueryFromText(queryText) {
+    if (typeof queryText !== 'string') return;
+    this.input.value = queryText.trim();
+    this.executeQuery();
+  }
+
   executeQuery() {
     let queryText = this.input.value.trim();
     if (!queryText) return;
@@ -205,8 +211,9 @@ export class REPL {
         vars.add(term.name);
       } else if (term.type === 'compound' && term.args) {
         term.args.forEach(extractFromTerm);
-      } else if (term.type === 'list' && term.elements) {
-        term.elements.forEach(extractFromTerm);
+      } else if (term.type === 'list') {
+        const items = term.items || term.elements || [];
+        items.forEach(extractFromTerm);
         if (term.tail) extractFromTerm(term.tail);
       }
     };

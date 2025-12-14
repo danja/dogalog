@@ -25,6 +25,7 @@ import { defaults } from './config/defaults.js';
 import { TutorialManager } from './tutorial/tutorialManager.js';
 import { TutorialOverlay } from './tutorial/tutorialOverlay.js';
 import { REPL } from './ui/repl.js';
+import { registerAIBridge } from './ui/aiBridge.js';
 
 /**
  * Initialize and start the Dogalog application
@@ -82,6 +83,21 @@ export function initializeApp({ manualLink, examples, defaultProgram }) {
   function setCode(text) {
     if (!editorView) return;
     editorView.dispatch({ changes: { from: 0, to: editorView.state.doc.length, insert: text } });
+  }
+
+  // Allow optional external drivers (e.g., AI bridge) to read/write code or run queries.
+  const runQuery = (queryText) => {
+    if (repl && typeof repl.executeQueryFromText === 'function') {
+      repl.executeQueryFromText(queryText);
+    }
+  };
+
+  if (typeof window !== 'undefined') {
+    window.dogalog = {
+      setCode,
+      getCode,
+      runQuery
+    };
   }
 
   // Create editor
@@ -180,4 +196,27 @@ export function initializeApp({ manualLink, examples, defaultProgram }) {
   createEditor(defaultProgram.trim());
   exampleSelect.value = examples[0]?.id ?? '';
   liveEvaluator.evaluate(getCode());
+
+  // Optional external hooks for AI/automation: react to custom events if dispatched.
+  if (typeof window !== 'undefined') {
+    const applyCode = (text) => {
+      const codeText = typeof text === 'string' ? text : '';
+      setCode(codeText);
+      liveEvaluator.evaluate(codeText);
+    };
+
+    const queryRunner = (text) => {
+      const queryText = typeof text === 'string' ? text : '';
+      runQuery(queryText);
+    };
+
+    const handleSetCode = (event) => applyCode(event.detail);
+    const handleRunQuery = (event) => queryRunner(event.detail);
+
+    window.addEventListener('dogalog:setCode', handleSetCode);
+    window.addEventListener('dogalog:query', handleRunQuery);
+
+    // Optional bridge for postMessage-based AI clients; inert unless messages are sent.
+    registerAIBridge({ setCode: applyCode, getCode, runQuery: queryRunner });
+  }
 }
