@@ -97,9 +97,14 @@ export function createAppTemplate({ manualLink, examples }) {
 
   main.appendChild(leftPanel);
 
-  // Right panel - Log and instruments
+  // Right panel - REPL, Log and instruments
   const rightPanel = document.createElement('section');
   rightPanel.className = 'panel';
+
+  // REPL container
+  const replContainer = document.createElement('div');
+  replContainer.id = 'repl-container';
+  rightPanel.appendChild(replContainer);
 
   const logHeader = document.createElement('h2');
   logHeader.textContent = 'Log';

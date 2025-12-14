@@ -639,3 +639,149 @@ footer {
     min-width: 100px;
   }
 }
+
+/* REPL (Interactive Query Interface) */
+.repl-container {
+  border-bottom: 1px solid var(--border);
+  background: var(--code-bg);
+  display: flex;
+  flex-direction: column;
+  max-height: 300px;
+  min-height: 200px;
+}
+
+.repl-header {
+  padding: 8px var(--spacing-sm);
+  background: var(--panel-header-bg);
+  border-bottom: 1px solid var(--border);
+  font-size: var(--font-size-small);
+  color: var(--muted);
+}
+
+.repl-header strong {
+  color: var(--accent);
+  margin-right: 6px;
+}
+
+.repl-output {
+  flex: 1;
+  overflow-y: auto;
+  padding: var(--spacing-sm);
+  font-size: var(--font-size-small);
+  line-height: 1.6;
+  min-height: 120px;
+}
+
+.repl-welcome {
+  color: var(--muted);
+  font-style: italic;
+  margin-bottom: var(--spacing-sm);
+}
+
+.repl-welcome code {
+  background: var(--select-bg);
+  padding: 2px 4px;
+  border-radius: 3px;
+  color: var(--accent);
+}
+
+.repl-query {
+  color: var(--ink);
+  margin-bottom: 4px;
+  font-family: inherit;
+}
+
+.repl-prompt {
+  color: var(--accent);
+  font-weight: 600;
+  margin-right: 4px;
+}
+
+.repl-result {
+  color: var(--accent);
+  margin-left: 20px;
+  margin-bottom: 4px;
+  font-family: inherit;
+}
+
+.repl-error {
+  color: #ff6b6b;
+  margin-left: 20px;
+  margin-bottom: 4px;
+}
+
+.repl-warning {
+  color: #ffd93d;
+  margin-left: 20px;
+  margin-bottom: 4px;
+}
+
+.repl-info {
+  color: var(--muted);
+  margin-left: 20px;
+  margin-bottom: var(--spacing-sm);
+  font-style: italic;
+  font-size: 11px;
+}
+
+.repl-input-container {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+  padding: var(--spacing-xs) var(--spacing-sm);
+  background: var(--panel);
+  border-top: 1px solid var(--border);
+}
+
+.repl-input-container .repl-prompt {
+  flex-shrink: 0;
+}
+
+.repl-input {
+  flex: 1;
+  background: var(--code-bg);
+  color: var(--ink);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 8px;
+  font-family: inherit;
+  font-size: var(--font-size-small);
+  min-width: 0;
+}
+
+.repl-input:focus {
+  outline: none;
+  border-color: var(--accent);
+}
+
+.repl-submit {
+  background: var(--accent);
+  color: var(--bg);
+  border-color: var(--accent);
+  min-width: 70px;
+}
+
+.repl-submit:hover,
+.repl-submit:focus {
+  background: #6ed77b;
+  border-color: #6ed77b;
+}
+
+.repl-clear {
+  min-width: 60px;
+}
+
+/* Tablet and up - REPL at top of right column */
+@media (min-width: 768px) {
+  .repl-container {
+    max-height: 40vh;
+    min-height: 250px;
+  }
+}
+
+/* Desktop - REPL has more space */
+@media (min-width: 1024px) {
+  .repl-container {
+    max-height: 45vh;
+  }
+}

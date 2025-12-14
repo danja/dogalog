@@ -24,6 +24,7 @@ import { setupEventHandlers } from './ui/eventHandlers.js';
 import { defaults } from './config/defaults.js';
 import { TutorialManager } from './tutorial/tutorialManager.js';
 import { TutorialOverlay } from './tutorial/tutorialOverlay.js';
+import { REPL } from './ui/repl.js';
 
 /**
  * Initialize and start the Dogalog application
@@ -44,6 +45,7 @@ export function initializeApp({ manualLink, examples, defaultProgram }) {
   const editorHost = document.getElementById('code-editor');
   const validationContainer = document.getElementById('validation-container');
   const beatCounter = document.getElementById('beat-counter');
+  const replContainer = document.getElementById('repl-container');
 
   // Initialize core components
   const builtins = createBuiltins();
@@ -62,6 +64,14 @@ export function initializeApp({ manualLink, examples, defaultProgram }) {
 
   // Create live evaluator
   const liveEvaluator = new LiveEvaluator({ scheduler, debounceMs: defaults.debounceMs });
+
+  // Create REPL
+  const repl = new REPL({
+    getProgram: () => liveEvaluator.currentProgram || [],
+    builtins,
+    stateManager
+  });
+  replContainer.appendChild(repl.getElement());
 
   // Logging utility
   function log(msg) {
