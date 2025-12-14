@@ -74,13 +74,13 @@ export function createAppTemplate({ examples }) {
 
   leftPanel.appendChild(exampleBar);
 
-  // Mapping section (goal + builtins)
+  // Mapping section (goal + builtins + instruments)
   const mappingDiv = createMappingSection();
   leftPanel.appendChild(mappingDiv);
 
   main.appendChild(leftPanel);
 
-  // Right panel - REPL, Log and instruments
+  // Right panel - REPL, AI helper, Log
   const rightPanel = document.createElement('section');
   rightPanel.className = 'panel';
 
@@ -88,6 +88,11 @@ export function createAppTemplate({ examples }) {
   const replContainer = document.createElement('div');
   replContainer.id = 'repl-container';
   rightPanel.appendChild(replContainer);
+
+  // AI Chat container (optional helper)
+  const aiChatContainer = document.createElement('div');
+  aiChatContainer.id = 'ai-chat-container';
+  rightPanel.appendChild(aiChatContainer);
 
   const logHeader = document.createElement('h2');
   logHeader.textContent = 'Log';
@@ -97,13 +102,6 @@ export function createAppTemplate({ examples }) {
   logPre.id = 'log';
   logPre.className = 'log';
   rightPanel.appendChild(logPre);
-
-  const instrumentsHeader = document.createElement('h2');
-  instrumentsHeader.textContent = 'Instruments';
-  rightPanel.appendChild(instrumentsHeader);
-
-  const instrumentsMapping = createInstrumentsSection();
-  rightPanel.appendChild(instrumentsMapping);
 
   main.appendChild(rightPanel);
 
@@ -185,6 +183,15 @@ function createMappingSection() {
 
   builtinsDiv.appendChild(builtinsGrid);
   mapping.appendChild(builtinsDiv);
+
+  // Instruments list (moved under built-ins)
+  const instrumentsHeader = document.createElement('div');
+  instrumentsHeader.className = 'builtins-title';
+  instrumentsHeader.textContent = 'Instruments:';
+  mapping.appendChild(instrumentsHeader);
+
+  const instrumentsMapping = createInstrumentsSection();
+  mapping.appendChild(instrumentsMapping);
 
   return mapping;
 }

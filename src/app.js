@@ -26,6 +26,7 @@ import { TutorialManager } from './tutorial/tutorialManager.js';
 import { TutorialOverlay } from './tutorial/tutorialOverlay.js';
 import { REPL } from './ui/repl.js';
 import { registerAIBridge } from './ui/aiBridge.js';
+import { AIChat } from './ui/aiChat.js';
 
 /**
  * Initialize and start the Dogalog application
@@ -46,6 +47,7 @@ export function initializeApp({ manualLink, examples, defaultProgram }) {
   const editorHost = document.getElementById('code-editor');
   const validationContainer = document.getElementById('validation-container');
   const replContainer = document.getElementById('repl-container');
+  const aiChatContainer = document.getElementById('ai-chat-container');
 
   // Initialize core components
   const builtins = createBuiltins();
@@ -178,6 +180,18 @@ export function initializeApp({ manualLink, examples, defaultProgram }) {
 
   const tutorialOverlay = new TutorialOverlay(tutorialManager, applyCode);
   app.appendChild(tutorialOverlay.getElement());
+
+  // Optional AI chat helper panel (inert if no endpoint configured)
+  const aiEndpoint = (typeof import.meta !== 'undefined' && import.meta.env?.VITE_AI_ENDPOINT) ?? defaults.aiEndpoint;
+  if (aiChatContainer) {
+    const aiChat = new AIChat({
+      endpoint: aiEndpoint,
+      applyCode,
+      runQuery,
+      getCode
+    });
+    aiChatContainer.appendChild(aiChat.getElement());
+  }
 
   // Tutorial button handler
   const tutorialBtn = document.getElementById('tutorial-btn');

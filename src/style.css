@@ -364,7 +364,10 @@ main {
 
 /* Log */
 .log {
-  height: 30vh;
+  height: auto;
+  min-height: 4.5em;
+  max-height: 6em;
+  flex: 0 0 auto;
   overflow: auto;
   padding: 10px var(--spacing-sm);
   font-size: var(--font-size-small);
@@ -415,6 +418,101 @@ main {
   grid-template-columns: 1fr;
   gap: var(--spacing-xs);
   flex: 1;
+}
+
+/* AI Chat */
+.ai-chat {
+  border: 1px dashed var(--border);
+  background: rgba(15, 19, 26, 0.8);
+  flex: 1 1 auto;
+}
+
+.ai-chat__header {
+  padding: 8px var(--spacing-sm);
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.ai-chat__header h2 {
+  margin: 0;
+  font-size: var(--font-size-small);
+  color: var(--muted);
+}
+
+.ai-chat__endpoint-row {
+  display: flex;
+}
+
+.ai-chat__endpoint {
+  width: 100%;
+  padding: 6px 8px;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  background: var(--select-bg);
+  color: var(--ink);
+  font-size: var(--font-size-small);
+}
+
+.ai-chat__body {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: var(--spacing-sm);
+  flex: 1 1 auto;
+}
+
+.ai-chat__status {
+  font-size: var(--font-size-small);
+  color: var(--muted);
+}
+
+.ai-chat__status[data-state="loading"] {
+  color: var(--accent);
+}
+
+.ai-chat__status[data-state="offline"] {
+  color: #ff6b6b;
+}
+
+.ai-chat__prompt {
+  width: 100%;
+  padding: 8px;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  background: var(--code-bg);
+  color: var(--ink);
+  font-size: var(--font-size-small);
+  resize: vertical;
+}
+
+.ai-chat__actions {
+  display: flex;
+  gap: var(--spacing-xs);
+  flex-wrap: wrap;
+}
+
+.ai-chat__output {
+  min-height: 120px;
+  max-height: none;
+  overflow-y: auto;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 8px;
+  background: var(--code-bg);
+  font-size: var(--font-size-small);
+  color: var(--ink);
+  flex: 1 1 auto;
+}
+
+.ai-chat__message + .ai-chat__message {
+  margin-top: 6px;
+}
+
+.ai-chat__placeholder {
+  color: var(--muted);
+  font-size: var(--font-size-small);
 }
 
 /* Validation indicator */
