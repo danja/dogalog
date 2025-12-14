@@ -9,5 +9,5 @@ export const defaults = {
   gridBeats: 0.25,
   debounceMs: 300,
   logMaxChars: 8000,
-  aiEndpoint: 'http://localhost:4101/dogalog/chat' // optional AI chat endpoint; leave blank to stay offline
+  aiEndpoint: 'https://mcp.tensegrity.it/dogalog/chat' // optional AI chat endpoint; leave blank to stay offline
 };
