@@ -161,6 +161,7 @@ export class TutorialOverlay {
     const step = tutorialSteps[this.manager.getCurrentStep()];
     if (step && step.code) {
       this.applyCode(step.code.trim());
+      this.hide();
     }
   }
 

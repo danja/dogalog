@@ -18,6 +18,8 @@ export class Scheduler {
     this.gridBeats = gridBeats;
     this.program = [];
     this.interval = null;
+    this.currentBeat = 0;
+    this.beatCallbacks = [];
   }
 
   setProgram(clauses) { this.program = clauses; }
@@ -34,13 +36,31 @@ export class Scheduler {
     this.interval = setInterval(() => this.tick(), this.lookaheadMs/2);
   }
 
-  stop() { if (this.interval) clearInterval(this.interval); this.interval=null; }
+  stop() {
+    if (this.interval) clearInterval(this.interval);
+    this.interval=null;
+    this.currentBeat = 0;
+    this.beatCallbacks.forEach(cb => cb(0));
+  }
+
+  onBeatChange(callback) {
+    this.beatCallbacks.push(callback);
+  }
 
   tick() {
     const now = this.audio.time();
     const ahead = this.lookaheadMs/1000;
     const step = (60/this.bpm) * this.gridBeats;
     const startQ = Math.floor(now/step)*step;
+
+    // Update current beat
+    const beatDuration = 60 / this.bpm;
+    const newBeat = Math.floor(now / beatDuration);
+    if (newBeat !== this.currentBeat) {
+      this.currentBeat = newBeat;
+      this.beatCallbacks.forEach(cb => cb(this.currentBeat));
+    }
+
     for (let t = startQ; t < now+ahead; t += step) {
       this.queryAndSchedule(t + step); // schedule strictly in the future
     }

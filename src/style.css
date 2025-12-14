@@ -80,6 +80,19 @@ header h1 {
   opacity: 0.95;
 }
 
+/* Beat counter */
+.beat-counter {
+  font-size: var(--font-size-small);
+  color: var(--accent);
+  background: var(--code-bg);
+  padding: 6px 10px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  font-weight: 500;
+  min-width: 80px;
+  text-align: center;
+}
+
 /* Main layout - mobile: single column */
 main {
   display: flex;

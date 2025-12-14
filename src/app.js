@@ -3,7 +3,7 @@
  * Handles component initialization, composition, and lifecycle management
  */
 import { EditorState } from '@codemirror/state';
-import { EditorView, keymap, lineNumbers, highlightActiveLine, highlightActiveLineGutter, drawSelection, dropCursor, highlightSpecialChars } from '@codemirror/view';
+import { EditorView, keymap, highlightActiveLine, drawSelection, dropCursor, highlightSpecialChars } from '@codemirror/view';
 import { defaultKeymap, history, historyKeymap, indentWithTab } from '@codemirror/commands';
 import { StreamLanguage } from '@codemirror/language';
 import { indentOnInput, syntaxHighlighting, defaultHighlightStyle, foldGutter, foldKeymap, bracketMatching } from '@codemirror/language';
@@ -43,12 +43,18 @@ export function initializeApp({ manualLink, examples, defaultProgram }) {
   const exampleSelect = document.getElementById('example-select');
   const editorHost = document.getElementById('code-editor');
   const validationContainer = document.getElementById('validation-container');
+  const beatCounter = document.getElementById('beat-counter');
 
   // Initialize core components
   const builtins = createBuiltins();
   const audio = new AudioEngine();
   const stateManager = new StateManager();
   const scheduler = new Scheduler({ audio, builtins, stateManager });
+
+  // Setup beat counter
+  scheduler.onBeatChange((beat) => {
+    if (beatCounter) beatCounter.textContent = `Beat: ${beat}`;
+  });
 
   // Create validation indicator
   const validationIndicator = new ValidationIndicator();
@@ -77,8 +83,6 @@ export function initializeApp({ manualLink, examples, defaultProgram }) {
   // Create editor
   function createEditor(doc) {
     const extensions = [
-      lineNumbers(),
-      highlightActiveLineGutter(),
       highlightSpecialChars(),
       history(),
       foldGutter(),

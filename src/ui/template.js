@@ -20,10 +20,12 @@ export function createAppTemplate({ manualLink, examples }) {
   title.textContent = 'Dogalog';
   header.appendChild(title);
 
-  // Validation indicator container
-  const validationContainer = document.createElement('div');
-  validationContainer.id = 'validation-container';
-  header.appendChild(validationContainer);
+  // Beat counter
+  const beatCounter = document.createElement('div');
+  beatCounter.id = 'beat-counter';
+  beatCounter.className = 'beat-counter';
+  beatCounter.textContent = 'Beat: 0';
+  header.appendChild(beatCounter);
 
   // Tutorial button
   const tutorialBtn = document.createElement('button');
@@ -55,9 +57,16 @@ export function createAppTemplate({ manualLink, examples }) {
   const leftPanel = document.createElement('section');
   leftPanel.className = 'panel';
 
-  const rulesHeader = document.createElement('h2');
-  rulesHeader.textContent = 'Rules (Prolog-ish)';
-  leftPanel.appendChild(rulesHeader);
+  // Validation indicator container
+  const validationContainer = document.createElement('div');
+  validationContainer.id = 'validation-container';
+  leftPanel.appendChild(validationContainer);
+
+  // Code editor container
+  const editorContainer = document.createElement('div');
+  editorContainer.id = 'code-editor';
+  editorContainer.className = 'editor-container';
+  leftPanel.appendChild(editorContainer);
 
   // Example bar
   const exampleBar = document.createElement('div');
@@ -81,12 +90,6 @@ export function createAppTemplate({ manualLink, examples }) {
   exampleBar.appendChild(exampleLabel);
 
   leftPanel.appendChild(exampleBar);
-
-  // Code editor container
-  const editorContainer = document.createElement('div');
-  editorContainer.id = 'code-editor';
-  editorContainer.className = 'editor-container';
-  leftPanel.appendChild(editorContainer);
 
   // Mapping section (goal + builtins)
   const mappingDiv = createMappingSection();

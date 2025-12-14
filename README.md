@@ -2,6 +2,8 @@
 
 Dogalog is a realtime Prolog-based livecoding music environment where you write logic rules to create algorithmic rhythmic patterns and melodies.
 
+## [Code Live!](https://danja.github.io/dogalog)
+
 ## Features
 
 - **Livecoding**: Auto-evaluation with visual feedback - code changes apply automatically
