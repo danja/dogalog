@@ -6,7 +6,7 @@ import { EditorState } from '@codemirror/state';
 import { EditorView, keymap, highlightActiveLine, drawSelection, dropCursor, highlightSpecialChars } from '@codemirror/view';
 import { defaultKeymap, history, historyKeymap, indentWithTab } from '@codemirror/commands';
 import { StreamLanguage } from '@codemirror/language';
-import { indentOnInput, syntaxHighlighting, defaultHighlightStyle, foldGutter, foldKeymap, bracketMatching } from '@codemirror/language';
+import { indentOnInput, syntaxHighlighting, defaultHighlightStyle, bracketMatching } from '@codemirror/language';
 import { autocompletion, completionKeymap, closeBrackets, closeBracketsKeymap } from '@codemirror/autocomplete';
 import { searchKeymap, highlightSelectionMatches } from '@codemirror/search';
 import { oneDark } from '@codemirror/theme-one-dark';
@@ -85,7 +85,6 @@ export function initializeApp({ manualLink, examples, defaultProgram }) {
     const extensions = [
       highlightSpecialChars(),
       history(),
-      foldGutter(),
       drawSelection(),
       dropCursor(),
       EditorState.allowMultipleSelections.of(true),
@@ -101,8 +100,6 @@ export function initializeApp({ manualLink, examples, defaultProgram }) {
         ...defaultKeymap,
         ...searchKeymap,
         ...historyKeymap,
-        ...foldKeymap,
-        ...completionKeymap,
         indentWithTab
       ]),
       StreamLanguage.define(prologLanguage),

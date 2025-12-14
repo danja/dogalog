@@ -3,16 +3,19 @@ import { VitePWA } from 'vite-plugin-pwa';
 
 const repoName = process.env.GITHUB_REPOSITORY?.split('/').pop();
 const isCI = Boolean(process.env.GITHUB_ACTIONS);
+const base = isCI && repoName ? `/${repoName}/` : '/';
 
 export default defineConfig({
-  base: isCI && repoName ? `/${repoName}/` : '/',
+  base,
   plugins: [
     VitePWA({
       registerType: 'autoUpdate',
-      includeAssets: ['docs/manual.html', 'docs/cheatsheet.html', 'icons/*.png'],
-      injectManifest: {
-        globPatterns: ['**/*.{js,css,html,png,svg}']
+      injectRegister: 'auto',
+      devOptions: {
+        enabled: true,
+        type: 'module'
       },
+      includeAssets: ['docs/manual.html', 'docs/cheatsheet.html', 'icons/*.png'],
       manifest: {
         name: 'Dogalog - Prolog Livecoding',
         short_name: 'Dogalog',
@@ -21,27 +24,28 @@ export default defineConfig({
         theme_color: '#7ee787',
         background_color: '#0b0c10',
         display: 'standalone',
-        start_url: './',
-        scope: './',
+        start_url: base,
+        scope: base,
+        id: base,
         protocol_handlers: [
           {
             protocol: 'web+dogalog',
-            url: './?program=%s'
+            url: `${base}?program=%s`
           }
         ],
         icons: [
           {
-            src: 'icons/icon-192.png',
+            src: `${base}icons/icon-192.png`,
             sizes: '192x192',
             type: 'image/png'
           },
           {
-            src: 'icons/icon-512.png',
+            src: `${base}icons/icon-512.png`,
             sizes: '512x512',
             type: 'image/png'
           },
           {
-            src: 'icons/icon-maskable-512.png',
+            src: `${base}icons/icon-maskable-512.png`,
             sizes: '512x512',
             type: 'image/png',
             purpose: 'maskable'
