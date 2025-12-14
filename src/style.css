@@ -68,16 +68,19 @@ header {
   padding: var(--spacing-sm) var(--spacing-md);
   border-bottom: 1px solid var(--border);
   display: flex;
+  flex-direction: column;
   gap: var(--spacing-sm);
   align-items: center;
-  flex-wrap: wrap;
+  text-align: center;
 }
 
 header h1 {
-  font-size: var(--font-size-title);
+  font-size: clamp(22px, 4vw, 32px);
   margin: 0;
   color: var(--ink);
   opacity: 0.95;
+  text-align: center;
+  flex: 1 1 100%;
 }
 
 /* Beat counter */
@@ -180,25 +183,97 @@ main {
 
 /* Controls - touch-friendly */
 .controls {
-  display: flex;
-  gap: var(--spacing-xs);
-  align-items: center;
-  flex-wrap: wrap;
   padding: 10px var(--spacing-sm);
+  display: flex;
+  justify-content: center;
 }
 
-.controls label {
+.controls-grid {
+  display: grid;
+  grid-template-columns: minmax(180px, 220px) auto minmax(160px, 1fr) auto auto;
+  align-items: center;
+  gap: var(--spacing-xs);
+  width: 100%;
+  max-width: 1000px;
+}
+
+.control-label {
   font-size: var(--font-size-small);
   color: var(--muted);
-  display: flex;
-  align-items: center;
-  gap: 6px;
+  white-space: nowrap;
 }
 
-.controls input[type="range"] {
-  min-width: 120px;
-  max-width: 180px;
+.control-slider {
+  min-width: 140px;
+  max-width: 220px;
   flex: 1;
+  width: 100%;
+}
+
+.control-value {
+  font-size: var(--font-size-small);
+  color: var(--ink);
+  background: var(--code-bg);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 6px 10px;
+  min-width: 70px;
+  text-align: center;
+}
+
+.control-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  align-items: stretch;
+  justify-content: center;
+}
+
+.control-links {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  align-items: stretch;
+}
+
+@media (max-width: 900px) {
+  .controls-grid {
+    grid-template-columns: 1fr;
+    justify-items: stretch;
+  }
+
+  .control-links,
+  .control-label,
+  .control-slider,
+  .control-value,
+  .control-actions {
+    grid-column: 1 !important;
+    grid-row: auto !important;
+  }
+
+  .control-actions {
+    flex-direction: row;
+    flex-wrap: wrap;
+  }
+}
+
+@media (max-width: 680px) {
+  .controls-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .control-label,
+  .control-slider,
+  .control-value,
+  .control-actions {
+    grid-column: 1 !important;
+    grid-row: auto !important;
+  }
+
+  .control-actions {
+    flex-direction: row;
+    flex-wrap: wrap;
+  }
 }
 
 /* Buttons - touch-friendly minimum size */
@@ -405,7 +480,7 @@ footer {
     grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
   }
 
-  .controls input[type="range"] {
+  .control-slider {
     width: 160px;
   }
 

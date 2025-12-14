@@ -14,7 +14,7 @@
  * @param {number} options.step - Step increment
  * @param {Function} options.onChange - Change handler (receives event)
  * @param {Function} options.formatValue - Optional value formatter
- * @returns {HTMLLabelElement}
+ * @returns {{ labelEl: HTMLDivElement, sliderEl: HTMLInputElement, valueEl: HTMLDivElement }}
  */
 export function createSlider({
   label,
@@ -27,15 +27,15 @@ export function createSlider({
   onChange,
   formatValue
 }) {
-  const labelElement = document.createElement('label');
-
-  // Label text
-  labelElement.appendChild(document.createTextNode(label + ' '));
+  const labelEl = document.createElement('div');
+  labelEl.className = 'control-label';
+  labelEl.textContent = label;
 
   // Range input
   const input = document.createElement('input');
   input.type = 'range';
   input.id = inputId;
+  input.className = 'control-slider';
   input.min = min;
   input.max = max;
   input.value = value;
@@ -44,22 +44,19 @@ export function createSlider({
   }
 
   // Value display
-  const valueSpan = document.createElement('span');
-  valueSpan.id = valueId;
-  valueSpan.textContent = formatValue ? formatValue(value) : value;
+  const valueEl = document.createElement('div');
+  valueEl.id = valueId;
+  valueEl.className = 'control-value';
+  valueEl.textContent = formatValue ? formatValue(value) : value;
 
   // Wire up change handler
   if (onChange) {
     input.addEventListener('input', (event) => {
       const val = event.target.value;
-      valueSpan.textContent = formatValue ? formatValue(val) : val;
+      valueEl.textContent = formatValue ? formatValue(val) : val;
       onChange(event);
     });
   }
 
-  labelElement.appendChild(input);
-  labelElement.appendChild(document.createTextNode(' '));
-  labelElement.appendChild(valueSpan);
-
-  return labelElement;
+  return { labelEl, sliderEl: input, valueEl };
 }

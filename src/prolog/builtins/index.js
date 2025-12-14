@@ -4,7 +4,7 @@
 import { every, beat, phase, euc } from './timing.js';
 import { scale, chord, transpose } from './musical.js';
 import { prob, choose, pick, cycle, rand, randint } from './random.js';
-import { eq, eqNumeric, neqNumeric, unifyGoal, lt, gt, lte, gte, within, distinct, cooldown } from './logic.js';
+import { eq, eqNumeric, neqNumeric, unifyGoal, isOp, lt, gt, lte, gte, within, distinct, cooldown } from './logic.js';
 import { add, range, rotate } from './arithmetic.js';
 
 /**
@@ -37,6 +37,7 @@ export function createBuiltins() {
     '=': unifyGoal,
     '=:=': eqNumeric,
     '=\\=': neqNumeric,
+    is: isOp,
     '<': lt,
     '>': gt,
     '=<': lte,

@@ -36,7 +36,7 @@ import { REPL } from './ui/repl.js';
 export function initializeApp({ manualLink, examples, defaultProgram }) {
   // Create and insert app template
   const app = document.getElementById('app');
-  const appTemplate = createAppTemplate({ manualLink, examples });
+  const appTemplate = createAppTemplate({ examples });
   app.appendChild(appTemplate);
 
   // Get DOM elements
@@ -44,7 +44,6 @@ export function initializeApp({ manualLink, examples, defaultProgram }) {
   const exampleSelect = document.getElementById('example-select');
   const editorHost = document.getElementById('code-editor');
   const validationContainer = document.getElementById('validation-container');
-  const beatCounter = document.getElementById('beat-counter');
   const replContainer = document.getElementById('repl-container');
 
   // Initialize core components
@@ -52,11 +51,6 @@ export function initializeApp({ manualLink, examples, defaultProgram }) {
   const audio = new AudioEngine();
   const stateManager = new StateManager();
   const scheduler = new Scheduler({ audio, builtins, stateManager });
-
-  // Setup beat counter
-  scheduler.onBeatChange((beat) => {
-    if (beatCounter) beatCounter.textContent = `Beat: ${beat}`;
-  });
 
   // Create validation indicator
   const validationIndicator = new ValidationIndicator();
@@ -142,10 +136,20 @@ export function initializeApp({ manualLink, examples, defaultProgram }) {
   });
 
   // Create controls with event handlers
-  createControls({
+  const { beatCounter } = createControls({
     scheduler,
     onStart: handlers.onStart,
-    onStop: handlers.onStop
+    onStop: handlers.onStop,
+    links: {
+      manualLink,
+      tutorialLink: `${import.meta.env.BASE_URL}docs/tutorial.html`,
+      referencesLink: `${import.meta.env.BASE_URL}docs/references.html`
+    }
+  });
+
+  // Setup beat counter
+  scheduler.onBeatChange((beat) => {
+    if (beatCounter) beatCounter.textContent = `Beat: ${beat}`;
   });
 
   // Initialize tutorial system
@@ -162,7 +166,8 @@ export function initializeApp({ manualLink, examples, defaultProgram }) {
   // Tutorial button handler
   const tutorialBtn = document.getElementById('tutorial-btn');
   if (tutorialBtn) {
-    tutorialBtn.addEventListener('click', () => {
+    tutorialBtn.addEventListener('click', (event) => {
+      event.preventDefault();
       if (!tutorialManager.hasStarted()) {
         tutorialManager.start();
       } else {

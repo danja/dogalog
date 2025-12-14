@@ -12,8 +12,12 @@ import { createSlider } from './components/slider.js';
  * @param {Function} handlers.onBpmChange - BPM change handler
  * @param {Function} handlers.onSwingChange - Swing change handler
  * @param {Function} handlers.onLookaheadChange - Lookahead change handler
+ * @param {Object} links - Documentation links
+ * @param {string} links.manualLink - Manual URL
+ * @param {string} links.tutorialLink - Tutorial URL
+ * @param {string} links.referencesLink - References URL
  * @param {Object} scheduler - Scheduler instance (for updating properties)
- * @returns {void} - Modifies the controls container in place
+ * @returns {{ beatCounter: HTMLElement | null }} - References to created controls
  */
 export function createControls({
   onStart,
@@ -21,10 +25,59 @@ export function createControls({
   onBpmChange,
   onSwingChange,
   onLookaheadChange,
+  links = {},
   scheduler
 }) {
   const container = document.getElementById('controls-container');
-  if (!container) return;
+  if (!container) return { beatCounter: null };
+
+  const grid = document.createElement('div');
+  grid.className = 'controls-grid';
+
+  const placeSliderRow = (components, row) => {
+    components.labelEl.style.gridColumn = '2';
+    components.sliderEl.style.gridColumn = '3';
+    components.valueEl.style.gridColumn = '4';
+    components.labelEl.style.gridRow = String(row);
+    components.sliderEl.style.gridRow = String(row);
+    components.valueEl.style.gridRow = String(row);
+  };
+
+  const linkGroup = document.createElement('div');
+  linkGroup.className = 'control-links';
+  linkGroup.style.gridRow = '1 / span 3';
+  linkGroup.style.gridColumn = '1';
+
+  if (links.tutorialLink) {
+    const tutorialBtn = document.createElement('a');
+    tutorialBtn.id = 'tutorial-btn';
+    tutorialBtn.className = 'btn tutorial-btn';
+    tutorialBtn.href = links.tutorialLink;
+    tutorialBtn.target = '_blank';
+    tutorialBtn.rel = 'noreferrer';
+    tutorialBtn.textContent = 'Tutorial';
+    linkGroup.appendChild(tutorialBtn);
+  }
+
+  if (links.manualLink) {
+    const manualBtn = document.createElement('a');
+    manualBtn.className = 'btn';
+    manualBtn.href = links.manualLink;
+    manualBtn.target = '_blank';
+    manualBtn.rel = 'noreferrer';
+    manualBtn.textContent = 'Manual';
+    linkGroup.appendChild(manualBtn);
+  }
+
+  if (links.referencesLink) {
+    const referencesBtn = document.createElement('a');
+    referencesBtn.className = 'btn';
+    referencesBtn.href = links.referencesLink;
+    referencesBtn.target = '_blank';
+    referencesBtn.rel = 'noreferrer';
+    referencesBtn.textContent = 'References';
+    linkGroup.appendChild(referencesBtn);
+  }
 
   // BPM slider
   const bpmSlider = createSlider({
@@ -39,7 +92,10 @@ export function createControls({
       if (onBpmChange) onBpmChange(event);
     }
   });
-  container.appendChild(bpmSlider);
+  placeSliderRow(bpmSlider, 1);
+  grid.appendChild(bpmSlider.labelEl);
+  grid.appendChild(bpmSlider.sliderEl);
+  grid.appendChild(bpmSlider.valueEl);
 
   // Swing slider
   const swingSlider = createSlider({
@@ -56,7 +112,10 @@ export function createControls({
       if (onSwingChange) onSwingChange(event);
     }
   });
-  container.appendChild(swingSlider);
+  placeSliderRow(swingSlider, 2);
+  grid.appendChild(swingSlider.labelEl);
+  grid.appendChild(swingSlider.sliderEl);
+  grid.appendChild(swingSlider.valueEl);
 
   // Lookahead slider
   const lookaheadSlider = createSlider({
@@ -76,7 +135,15 @@ export function createControls({
       if (onLookaheadChange) onLookaheadChange(event);
     }
   });
-  container.appendChild(lookaheadSlider);
+  placeSliderRow(lookaheadSlider, 3);
+  grid.appendChild(lookaheadSlider.labelEl);
+  grid.appendChild(lookaheadSlider.sliderEl);
+  grid.appendChild(lookaheadSlider.valueEl);
+
+  const actions = document.createElement('div');
+  actions.className = 'control-actions';
+  actions.style.gridRow = '1 / span 3';
+  actions.style.gridColumn = '5';
 
   // Start button
   const startBtn = createButton({
@@ -85,7 +152,7 @@ export function createControls({
     variant: 'primary',
     onClick: onStart
   });
-  container.appendChild(startBtn);
+  actions.appendChild(startBtn);
 
   // Stop button
   const stopBtn = createButton({
@@ -94,5 +161,18 @@ export function createControls({
     variant: 'danger',
     onClick: onStop
   });
-  container.appendChild(stopBtn);
+  actions.appendChild(stopBtn);
+
+  // Beat counter
+  const beatCounter = document.createElement('div');
+  beatCounter.id = 'beat-counter';
+  beatCounter.className = 'beat-counter';
+  beatCounter.textContent = 'Beat: 0';
+  actions.appendChild(beatCounter);
+
+  grid.appendChild(linkGroup);
+  grid.appendChild(actions);
+  container.appendChild(grid);
+
+  return { beatCounter };
 }

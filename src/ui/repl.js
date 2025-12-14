@@ -23,13 +23,13 @@ export class REPL {
     // Header
     const header = document.createElement('div');
     header.className = 'repl-header';
-    header.innerHTML = '<strong>?-</strong> Interactive Query (ISO Prolog REPL)';
+    header.innerHTML = '<h2>Interactive Query</h2>';
     container.appendChild(header);
 
     // Output area
     this.output = document.createElement('div');
     this.output.className = 'repl-output';
-    this.output.innerHTML = '<div class="repl-welcome">Enter queries to interact with the rules above. Examples: <code>kik(0.5)</code> <code>bass(1.0, N)</code> <code>event(V, P, _, 0)</code></div>';
+    this.output.innerHTML = '<div class="repl-welcome">Enter queries to interact with the rules. Examples: <code>kik(0.5)</code> <code>bass(1.0, N)</code> <code>event(V, P, _, 0)</code></div>';
     container.appendChild(this.output);
 
     // Input area

@@ -6,11 +6,10 @@
 /**
  * Create the main application template
  * @param {Object} config - Configuration object
- * @param {string} config.manualLink - Link to manual
  * @param {Array} config.examples - Array of example programs
  * @returns {DocumentFragment}
  */
-export function createAppTemplate({ manualLink, examples }) {
+export function createAppTemplate({ examples }) {
   const fragment = document.createDocumentFragment();
 
   // Header
@@ -19,28 +18,6 @@ export function createAppTemplate({ manualLink, examples }) {
   const title = document.createElement('h1');
   title.textContent = 'Dogalog';
   header.appendChild(title);
-
-  // Beat counter
-  const beatCounter = document.createElement('div');
-  beatCounter.id = 'beat-counter';
-  beatCounter.className = 'beat-counter';
-  beatCounter.textContent = 'Beat: 0';
-  header.appendChild(beatCounter);
-
-  // Tutorial button
-  const tutorialBtn = document.createElement('button');
-  tutorialBtn.id = 'tutorial-btn';
-  tutorialBtn.className = 'btn tutorial-btn';
-  tutorialBtn.textContent = 'Tutorial';
-  header.appendChild(tutorialBtn);
-
-  const manualBtn = document.createElement('a');
-  manualBtn.className = 'btn';
-  manualBtn.href = manualLink;
-  manualBtn.target = '_blank';
-  manualBtn.rel = 'noreferrer';
-  manualBtn.textContent = 'Manual';
-  header.appendChild(manualBtn);
 
   // Controls container
   const controlsDiv = document.createElement('div');

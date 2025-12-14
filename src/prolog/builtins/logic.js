@@ -42,6 +42,17 @@ export function unifyGoal(args, env) {
   return out ? [out] : [];
 }
 
+/**
+ * is/2 - Evaluate arithmetic expression on RHS and unify with LHS
+ */
+export function isOp(args, env) {
+  const value = evalExpression(args[1], env);
+  const left = normalizeTerm(args[0], env);
+  const target = { type: 'num', value };
+  const out = unify(left, target, { ...env });
+  return out ? [out] : [];
+}
+
 function normalizeTerm(term, env) {
   // If it's an arithmetic expression we can reduce it before unifying
   try {

@@ -231,5 +231,67 @@ event(hat, 42, 0.25, T) :- drum_chaos(T), randint(1, 4, R), eq(R, 2).
 event(clap, 39, 0.65, T) :- drum_chaos(T), randint(1, 4, R), eq(R, 3).
 event(noise, 0, 0.30, T) :- drum_chaos(T), randint(1, 4, R), eq(R, 4).
 `
-  }
+  },
+
+  {
+    id: 'green-tuesday',
+    label: 'Green Tuesday',
+    code: `
+% homage to a classic, structured intro with staged layering
+% Start ~120 BPM, slight swing. Begins with 2 bars of kick-only, then layers.
+
+% --- Section timing helpers ---
+in_bars(T, StartBar, EndBar) :- Start is StartBar * 4.0, End is EndBar * 4.0, T >= Start, T =< End.
+after_bars(T, Bars) :- Start is Bars * 4.0, T > Start.
+break_window(T) :-
+  range(8, 128, 8, B),          % Break every 8 bars up to bar 128
+  Start is B * 4.0,             % Bars -> beats (4 beats per bar) in time space
+  End is Start + 2.0,           % 2-bar break window
+  within(T, Start, End).
+
+% --- Drums ---
+% Kick-only intro for first 2 bars; fills kick in later bars
+kik(T) :- euc(T, 4, 16, 4, 0).
+kik(T) :- phase(T, 16, 15), prob(0.35), after_bars(T, 4).
+
+% Backbeat clap with ghost notes, delayed entrance
+snr(T) :- euc(T, 2, 16, 4, 4), after_bars(T, 2).
+ghost(T) :- phase(T, 16, 11), prob(0.35), after_bars(T, 4).
+
+% Hats: cycle step lengths for tension/release, enter after bar 3
+hat_step(S) :- cycle([0.25, 0.25, 0.5, 0.25], S).
+hat(T) :- hat_step(S), every(T, S), after_bars(T, 3).
+
+% --- Bass ---
+% Sparse bass after bar 2, occasional octave lift after bar 5
+bass_note(N) :- cycle([40, 43, 38, 45, 43, 40, 47, 43], N).
+bass(T, N) :- every(T, 0.5), bass_note(N), after_bars(T, 2), \\+ break_window(T).
+bass(T, N2) :- beat(T, 1), bass_note(N), transpose(N, 12, N2), prob(0.2), after_bars(T, 5), \\+ break_window(T).
+
+% --- Arp (sequential, one note per tick) ---
+arp_seq([57, 60, 64, 60, 62, 69, 64, 60]).
+arp_note(N) :- arp_seq(L), cycle(L, N).
+arp(T, N) :- every(T, 0.25), arp_note(N), after_bars(T, 4), \\+ break_window(T).
+
+% --- Haunting lead motif (monophonic cycle) ---
+lead_seq([72, 74, 76, 74, 72, 71, 69, 67]).
+lead_note(N) :- lead_seq(L), cycle(L, N).
+lead(T, N) :- every(T, 0.125), lead_note(N), prob(0.55), after_bars(T, 4), \\+ break_window(T).
+
+% --- Events and layer gating ---
+event(kick, 36, 0.95, T) :- kik(T), \\+ break_window(T).
+event(kick, 36, 0.85, T) :- kik(T), break_window(T). % Keep pulse in breaks
+event(clap, 39, 0.80, T) :- snr(T), \\+ break_window(T).
+event(snare, 38, 0.60, T) :- ghost(T), \\+ break_window(T).
+event(hat, 42, 0.20, T) :- hat(T), \\+ break_window(T).
+event(hat, 46, 0.25, T) :- every(T, 0.5), prob(0.15), after_bars(T, 4), \\+ break_window(T).
+event(sine, N, 0.52, T) :- bass(T, N).
+event(square, N, 0.32, T) :- arp(T, N).
+event(triangle, N, 0.30, T) :- lead(T, N).
+
+% Break texture: off-beat claps + ticking hats
+event(clap, 39, 0.65, T) :- break_window(T), phase(T, 8, 4).
+event(hat, 42, 0.14, T) :- break_window(T), every(T, 0.25).
+`
+  },
 ];

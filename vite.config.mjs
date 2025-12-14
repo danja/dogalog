@@ -15,7 +15,7 @@ export default defineConfig({
         enabled: true,
         type: 'module'
       },
-      includeAssets: ['docs/manual.html', 'docs/cheatsheet.html', 'docs/tutorial.html', 'docs/docs.css', 'icons/*.png', 'screenshots/*.png'],
+      includeAssets: ['docs/manual.html', 'docs/cheatsheet.html', 'docs/tutorial.html', 'docs/references.html', 'docs/docs.css', 'icons/*.png', 'screenshots/*.png'],
       manifest: {
         name: 'Dogalog - Prolog Livecoding',
         short_name: 'Dogalog',

@@ -9,7 +9,8 @@ const __dirname = path.dirname(__filename);
 const docs = [
   { slug: 'manual', title: 'Dogalog Manual' },
   { slug: 'cheatsheet', title: 'Dogalog Cheatsheet' },
-  { slug: 'tutorial', title: 'Dogalog Tutorial' }
+  { slug: 'tutorial', title: 'Dogalog Tutorial' },
+  { slug: 'references', title: 'Dogalog References' }
 ];
 
 const docsDir = path.resolve(__dirname, '..', 'docs');

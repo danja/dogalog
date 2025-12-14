@@ -3,7 +3,6 @@ import { createAppTemplate } from '../../src/ui/template.js';
 
 describe('App Template', () => {
   const mockConfig = {
-    manualLink: '/docs/manual.html',
     examples: [
       { id: 'ex1', label: 'Example 1', code: 'test1.' },
       { id: 'ex2', label: 'Example 2', code: 'test2.' }
@@ -84,17 +83,7 @@ describe('App Template', () => {
     expect(options[1].textContent).toBe('Example 2');
   });
 
-  it('includes manual link button', () => {
-    const template = createAppTemplate(mockConfig);
-    const container = document.createElement('div');
-    container.appendChild(template);
-
-    const manualBtn = container.querySelector('a.btn[href="/docs/manual.html"]');
-    expect(manualBtn).toBeTruthy();
-    expect(manualBtn.textContent).toBe('Manual');
-    expect(manualBtn.target).toBe('_blank');
-    expect(manualBtn.rel).toBe('noreferrer');
-  });
+  // Manual/tutorial/reference links now live in the controls component.
 
   it('includes log element', () => {
     const template = createAppTemplate(mockConfig);

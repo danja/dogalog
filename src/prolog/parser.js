@@ -72,9 +72,9 @@ export function parseProgram(src) {
   function parseGoalTerm() {
     const left = parseExpression();
     const comp = peek();
-    if (comp && comp.type === 'sym' && comparisonOps.has(comp.value)) {
+    if (isComparisonToken(comp)) {
       const op = comp.value;
-      eat('sym', op);
+      eat(comp.type, op);
       const right = parseExpression();
       return { type: 'comparison', op, left, right };
     }
@@ -196,7 +196,8 @@ export function parseProgram(src) {
         '<': '<',
         '>': '>',
         '=<': '=<',
-        '>=': '>='
+        '>=': '>=',
+        is: 'is'
       };
       const f = mapping[node.op];
       if (!f) throw new Error(`Unsupported operator ${node.op}`);
@@ -223,4 +224,11 @@ export function parseProgram(src) {
   return clauses;
 }
 
-const comparisonOps = new Set(['=', '=:=', '=\\=', '<', '>', '=<', '>=']);
+const comparisonOps = new Set(['=', '=:=', '=\\=', '<', '>', '=<', '>=', 'is']);
+
+function isComparisonToken(tok) {
+  if (!tok) return false;
+  if (tok.type === 'sym' && comparisonOps.has(tok.value)) return true;
+  if (tok.type === 'atom_or_var' && tok.value === 'is') return true;
+  return false;
+}
