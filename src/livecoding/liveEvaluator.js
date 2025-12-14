@@ -19,6 +19,7 @@ export class LiveEvaluator {
       error: []
     };
     this.lastValidCode = '';
+    this.currentProgram = [];
   }
 
   /**
@@ -41,6 +42,7 @@ export class LiveEvaluator {
 
     if (result.valid) {
       this.lastValidCode = text;
+      this.currentProgram = result.clauses;
       this.scheduler.setProgram(result.clauses);
       this.emit('validated', {
         success: true,

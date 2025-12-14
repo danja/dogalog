@@ -25,6 +25,14 @@ describe('Live Evaluator', () => {
     );
   });
 
+  it('stores the latest valid program for reuse', () => {
+    const code = 'event(kick, 36, 0.9, T) :- beat(T, 1).';
+    evaluator.evaluate(code);
+
+    expect(Array.isArray(evaluator.currentProgram)).toBe(true);
+    expect(evaluator.currentProgram.length).toBeGreaterThan(0);
+  });
+
   it('does not update scheduler for invalid code', () => {
     const code = 'event(kick, 36, 0.9';
     evaluator.evaluate(code);
@@ -84,6 +92,15 @@ describe('Live Evaluator', () => {
     // Invalid code should not update last valid
     evaluator.evaluate('invalid(');
     expect(evaluator.getLastValidCode()).toBe(validCode);
+  });
+
+  it('retains the last valid program when encountering invalid code', () => {
+    const validCode = 'event(kick, 36, 0.9, T) :- beat(T, 1).';
+    evaluator.evaluate(validCode);
+    const lastProgram = evaluator.currentProgram;
+
+    evaluator.evaluate('invalid(');
+    expect(evaluator.currentProgram).toBe(lastProgram);
   });
 
   it('handles empty code as valid', () => {

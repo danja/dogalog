@@ -237,6 +237,8 @@ event(noise, 0, 0.30, T) :- drum_chaos(T), randint(1, 4, R), eq(R, 4).
     id: 'green-tuesday',
     label: 'Green Tuesday',
     code: `
+human(socrates).
+mortal(X) :- human(X).
 % homage to a classic, structured intro with staged layering
 % Start ~120 BPM, slight swing. Begins with 2 bars of kick-only, then layers.
 
