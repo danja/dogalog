@@ -348,7 +348,7 @@ main {
   border-radius: 10px;
   padding: 10px 12px;
   min-height: var(--touch-target-min);
-  font: inherit;
+  font-size: var(--font-size-small);
   font-weight: 700;
   box-shadow: 0 6px 16px rgba(70, 209, 255, 0.2);
   transition: border-color 0.2s, box-shadow 0.2s, transform 0.1s;
