@@ -1,5 +1,7 @@
 # Prolog-ish Livecoding Cheatsheet
 
+**New to Prolog?** Check out the [Full Tutorial](tutorial.html) for comprehensive explanations!
+
 ## Core shape
 - Facts: `kick(t0).` — things that are simply true.
 - Rules: `head :- goal1, goal2.` — head is true if all goals are true.

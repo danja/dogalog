@@ -1,0 +1,823 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Dogalog Tutorial</title>
+  <link rel="stylesheet" href="docs.css" />
+</head>
+<body>
+<h1>Dogalog Tutorial: Learning Prolog Through Livecoding</h1>
+<p>Welcome to Dogalog! This tutorial will teach you both <strong>Prolog</strong> (a logic programming language) and <strong>livecoding</strong> (creating music by writing code in real-time). By the end, you&#39;ll understand how declarative logic can create compelling musical patterns.</p>
+<h2>Table of Contents</h2>
+<ul>
+<li><a href="#part-i-prolog-fundamentals">Part I: Prolog Fundamentals</a></li>
+<li><a href="#part-ii-your-first-sounds">Part II: Your First Sounds</a></li>
+<li><a href="#part-iii-musical-patterns">Part III: Musical Patterns</a></li>
+<li><a href="#part-iv-advanced-techniques">Part IV: Advanced Techniques</a></li>
+<li><a href="#part-v-prolog-deep-dive">Part V: Prolog Deep Dive</a></li>
+<li><a href="#next-steps">Next Steps</a></li>
+</ul>
+<hr>
+<h2>Part I: Prolog Fundamentals</h2>
+<h3>What is Prolog?</h3>
+<p>Prolog (Programming in Logic) is a <strong>declarative</strong> programming language. Instead of telling the computer <em>how</em> to do something step-by-step, you declare <em>what</em> is true and let the computer figure out the details.</p>
+<p>Think of it like this:</p>
+<ul>
+<li><strong>Imperative</strong> (JavaScript, Python): &quot;Go to the store, buy milk, come back&quot;</li>
+<li><strong>Declarative</strong> (Prolog): &quot;I need milk&quot; (the system figures out how to get it)</li>
+</ul>
+<h3>Facts: Declaring Truth</h3>
+<p>In Prolog, we declare <strong>facts</strong> — statements that are simply true. Facts form the <strong>Knowledge Base</strong> of your program.</p>
+<p><strong>Format</strong>: <code>relation(entity1, entity2, ...).</code></p>
+<p><strong>Examples</strong>:</p>
+<pre><code class="language-prolog">singer(sonu).        % sonu is a singer
+friends(raju, mahesh).  % raju and mahesh are friends
+odd_number(5).       % 5 is an odd number
+</code></pre>
+<p><strong>Key points</strong>:</p>
+<ul>
+<li>Relations (like <code>singer</code>, <code>friends</code>) start with <strong>lowercase</strong></li>
+<li>Entities are enclosed in <strong>parentheses</strong> and separated by <strong>commas</strong></li>
+<li>Every fact ends with a <strong>period</strong> <code>.</code></li>
+<li><code>%</code> starts a comment</li>
+</ul>
+<h3>Queries: Asking Questions</h3>
+<p>Once you have facts, you can <strong>query</strong> the Knowledge Base. In traditional Prolog, queries start with <code>?-</code>.</p>
+<pre><code class="language-prolog">?- singer(sonu).
+Output: Yes.
+
+?- odd_number(7).
+Output: No.
+</code></pre>
+<p>The first query succeeds because <code>singer(sonu)</code> is in our Knowledge Base. The second fails because we never declared <code>odd_number(7)</code>.</p>
+<p><strong>In Dogalog</strong>: Instead of typing queries manually, the engine automatically queries <code>event(Voice, Pitch, Vel, T)</code> on every beat. Your job is to write rules that answer this query with musical events!</p>
+<h3>Variables: The Power of Logic</h3>
+<p><strong>Variables</strong> in Prolog start with <strong>uppercase</strong> or <code>_</code>. They represent unknown values that Prolog will try to find.</p>
+<pre><code class="language-prolog">% Facts
+instrument(kick).
+instrument(snare).
+instrument(hat).
+
+% Query with a variable
+?- instrument(X).
+X = kick ;     % First solution
+X = snare ;    % Second solution
+X = hat.       % Third solution
+</code></pre>
+<p>Prolog finds <em>all</em> values of <code>X</code> that make the query true. This is called <strong>backtracking</strong> — Prolog explores all possibilities.</p>
+<p><strong>Special variable</strong> <code>_</code> (underscore):</p>
+<ul>
+<li>Means &quot;I don&#39;t care about this value&quot;</li>
+<li>Fresh every time (won&#39;t unify with itself)</li>
+<li>Example: <code>event(kick, _, _, T)</code> matches any Pitch and Velocity</li>
+</ul>
+<h3>Unification: Pattern Matching</h3>
+<p><strong>Unification</strong> is how Prolog matches patterns. Two terms unify if they can be made identical.</p>
+<pre><code class="language-prolog">% These unify:
+kick = kick              % Atoms match
+X = 5                    % Variable binds to 5
+foo(X, 2) = foo(1, Y)    % X=1, Y=2
+
+% These don&#39;t unify:
+kick = snare             % Different atoms
+foo(1, 2) = bar(1, 2)    % Different functors
+</code></pre>
+<p>Unification is bidirectional — variables on either side can bind.</p>
+<h3>Rules: Logical Inference</h3>
+<p><strong>Rules</strong> express conditional truth: &quot;X is true IF Y and Z are true.&quot;</p>
+<p><strong>Format</strong>: <code>head :- goal1, goal2, goal3.</code></p>
+<p>The <code>:-</code> operator means &quot;if&quot; (think of it as a backwards arrow ←).</p>
+<pre><code class="language-prolog">% Facts
+loud(kick).
+loud(snare).
+quiet(hat).
+
+% Rules
+drum(X) :- loud(X).      % X is a drum if X is loud
+drum(X) :- quiet(X).     % X is a drum if X is quiet
+
+% Query
+?- drum(hat).
+Yes.  % Matches second rule: hat is quiet, so hat is a drum
+</code></pre>
+<p><strong>Multiple goals</strong> (separated by commas) mean <strong>AND</strong>:</p>
+<pre><code class="language-prolog">heavy(X) :- drum(X), loud(X).
+% X is heavy if X is a drum AND X is loud
+</code></pre>
+<h3>Lists: Ordered Collections</h3>
+<p>Lists are written as <code>[item1, item2, item3]</code> or using <strong>head|tail</strong> notation:</p>
+<pre><code class="language-prolog">[1, 2, 3]           % A list of three numbers
+[H|T]               % H = head (first item), T = tail (rest)
+[60, 64, 67, 72]    % MIDI notes (C, E, G, C)
+
+% Head|Tail examples:
+[1, 2, 3] = [H|T]   % H = 1, T = [2, 3]
+[a] = [H|T]         % H = a, T = []
+[] = [H|T]          % Fails (empty list has no head)
+</code></pre>
+<p>Lists are fundamental in Prolog and essential for musical patterns!</p>
+<h3>Backtracking: Exploring All Possibilities</h3>
+<p>When Prolog tries to satisfy a goal, it may find multiple solutions. <strong>Backtracking</strong> is how it explores them all.</p>
+<pre><code class="language-prolog">note(60).  % C
+note(64).  % E
+note(67).  % G
+
+melody(N) :- note(N).
+
+% Query: melody(N)
+% Prolog tries:
+% 1. note(60) → N = 60 ✓
+% 2. (backtrack) note(64) → N = 64 ✓
+% 3. (backtrack) note(67) → N = 67 ✓
+</code></pre>
+<p><strong>In Dogalog</strong>: When the engine asks <code>event(Voice, Pitch, Vel, T)</code>, backtracking means <em>multiple events can fire at the same time</em>. This is how you create chords and polyrhythms!</p>
+<h3>Recursion: Repeating Patterns</h3>
+<p>Recursion is when a rule calls itself. It&#39;s the Prolog way to process lists and create loops.</p>
+<p><strong>Classic example</strong>: Walking through a list</p>
+<pre><code class="language-prolog">% Base case: first item of list is the head
+first([H|_], H).
+
+% Recursive case: to find any item, try the head, or recurse on tail
+member([H|_], H).              % Item is the head
+member([_|T], X) :- member(T, X).  % Or it&#39;s in the tail
+
+% Usage:
+?- member([60, 64, 67], X).
+X = 60 ;   % First clause
+X = 64 ;   % Second clause, recursion
+X = 67.    % Second clause, deeper recursion
+</code></pre>
+<p><strong>Musical recursion</strong> (we&#39;ll see this later):</p>
+<pre><code class="language-prolog">% Play each note in a sequence
+seq([H|_], H).
+seq([_|T], X) :- seq(T, X).
+
+play_notes(N) :- seq([60, 64, 67, 72], N).
+event(sine, N, 0.7, T) :- every(T, 0.25), play_notes(N).
+% Plays C-E-G-C on every quarter beat
+</code></pre>
+<hr>
+<h2>Part II: Your First Sounds</h2>
+<p>Now let&#39;s apply Prolog to <strong>livecoding</strong>! In Dogalog, the engine queries <code>event(Voice, Pitch, Vel, T)</code> on a rhythmic grid. Your rules define when and how sounds play.</p>
+<h3>The <code>event/4</code> Predicate</h3>
+<pre><code class="language-prolog">event(Voice, Pitch, Velocity, Time)
+</code></pre>
+<ul>
+<li><strong>Voice</strong>: Instrument name (<code>kick</code>, <code>snare</code>, <code>hat</code>, <code>clap</code>, <code>sine</code>, <code>square</code>, <code>triangle</code>, <code>noise</code>)</li>
+<li><strong>Pitch</strong>: MIDI note number (0-127, used by pitched synths like <code>sine</code>)</li>
+<li><strong>Velocity</strong>: Volume/intensity (0.0-1.0, where 1.0 is loudest)</li>
+<li><strong>Time</strong>: Current time in beats (provided by the scheduler)</li>
+</ul>
+<p><strong>Goal</strong>: Write rules that make <code>event/4</code> true when you want a sound to play.</p>
+<h3>Tutorial Step 1: Your First Sound</h3>
+<p>Let&#39;s make a kick drum play on every beat.</p>
+<pre><code class="language-prolog">% Kick on every beat
+event(kick, 60, 0.8, T) :- beat(T, 1).
+</code></pre>
+<p><strong>Explanation</strong>:</p>
+<ul>
+<li><code>event(kick, 60, 0.8, T)</code> declares a kick drum event<ul>
+<li>Voice: <code>kick</code></li>
+<li>Pitch: <code>60</code> (irrelevant for drums, but required)</li>
+<li>Velocity: <code>0.8</code> (80% volume)</li>
+<li>Time: <code>T</code> (a variable — will unify with the current time)</li>
+</ul>
+</li>
+<li><code>beat(T, 1)</code> is a <strong>built-in</strong> that succeeds when time <code>T</code> falls on a beat boundary<ul>
+<li><code>beat(T, 1)</code> = every beat (downbeat, quarter notes)</li>
+<li><code>beat(T, 2)</code> = every half beat (eighth notes)</li>
+<li><code>beat(T, 4)</code> = every quarter beat (sixteenth notes)</li>
+</ul>
+</li>
+</ul>
+<p><strong>Try it</strong>:</p>
+<ol>
+<li>Click <strong>Start</strong> in the app to begin audio</li>
+<li>Paste the code above into the editor</li>
+<li>You&#39;ll hear a steady kick drum on every beat!</li>
+</ol>
+<p><strong>Experiment</strong>:</p>
+<ul>
+<li>Change <code>0.8</code> to <code>0.5</code> or <code>1.0</code> to adjust volume</li>
+<li>Change <code>beat(T, 1)</code> to <code>beat(T, 2)</code> for faster kicks</li>
+<li>Add a snare: <code>event(snare, 38, 0.7, T) :- beat(T, 2).</code></li>
+</ul>
+<h3>Tutorial Step 2: Understanding Beat Divisions</h3>
+<p>The <code>beat/2</code> built-in divides time into regular intervals.</p>
+<pre><code class="language-prolog">% Kick on downbeat (every bar)
+event(kick, 60, 1.0, T) :- beat(T, 1).
+
+% Snare on beat 2 (halfway through bar)
+event(snare, 60, 0.9, T) :- beat(T, 2).
+</code></pre>
+<p><strong>Common patterns</strong>:</p>
+<ul>
+<li><code>beat(T, 1)</code>: Once per bar (every 4 beats in 4/4 time)</li>
+<li><code>beat(T, 2)</code>: Twice per bar (backbeat: beats 1 and 3)</li>
+<li><code>beat(T, 4)</code>: Four times per bar (every quarter note)</li>
+</ul>
+<h3>Tutorial Step 3: Using <code>every/2</code> for Precise Timing</h3>
+<p>For more control, use <code>every(T, Step)</code>, which triggers at intervals of <code>Step</code> beats.</p>
+<pre><code class="language-prolog">% Kick on downbeat
+event(kick, 60, 1.0, T) :- beat(T, 1).
+
+% Fast hi-hats (4 times per beat)
+event(hat, 42, 0.6, T) :- every(T, 0.25).
+</code></pre>
+<p><strong>Common intervals</strong>:</p>
+<ul>
+<li><code>every(T, 1.0)</code>: Once per beat (quarter notes)</li>
+<li><code>every(T, 0.5)</code>: Twice per beat (eighth notes)</li>
+<li><code>every(T, 0.25)</code>: Four times per beat (sixteenth notes)</li>
+<li><code>every(T, 0.125)</code>: Eight times per beat (thirty-second notes)</li>
+</ul>
+<p><strong>Example: Basic drum pattern</strong></p>
+<pre><code class="language-prolog">event(kick, 36, 0.95, T) :- beat(T, 1).      % Kick on every beat
+event(snare, 38, 0.85, T) :- beat(T, 2).     % Snare on beats 2 &amp; 4 (backbeat)
+event(hat, 42, 0.25, T) :- every(T, 0.5).    % Hi-hats on eighth notes
+</code></pre>
+<p>Try this in the app (or load <strong>&quot;Euclidean basics&quot;</strong> from the Examples dropdown)!</p>
+<h3>Voices: The Instruments</h3>
+<p>Dogalog has 8 built-in instruments:</p>
+<p><strong>Drum/Percussion</strong> (ignore Pitch parameter):</p>
+<ul>
+<li><code>kick</code>: Synthesized kick drum</li>
+<li><code>snare</code>: Noise-based snare</li>
+<li><code>hat</code>: Hi-hat (short noise burst)</li>
+<li><code>clap</code>: Layered clap sound</li>
+<li><code>noise</code>: Broadband noise burst</li>
+</ul>
+<p><strong>Pitched Synths</strong> (Pitch is MIDI note):</p>
+<ul>
+<li><code>sine</code>: Pure sine wave (smooth, sub-bass)</li>
+<li><code>square</code>: Square wave (bright, retro)</li>
+<li><code>triangle</code>: Triangle wave (warm, mellow)</li>
+</ul>
+<p><strong>Example: Synth melody</strong></p>
+<pre><code class="language-prolog">% Simple melody using sine synth
+event(sine, 60, 0.7, T) :- every(T, 1.0).    % C (MIDI 60)
+event(sine, 64, 0.7, T) :- every(T, 1.0).    % E (MIDI 64)
+event(sine, 67, 0.7, T) :- every(T, 1.0).    % G (MIDI 67)
+% All three fire together = C major chord!
+</code></pre>
+<hr>
+<h2>Part III: Musical Patterns</h2>
+<p>Now we&#39;ll add <strong>variation</strong>, <strong>randomness</strong>, and <strong>musical structure</strong> using Prolog&#39;s non-determinism.</p>
+<h3>Tutorial Step 4: Random Choices with <code>choose/2</code></h3>
+<p><code>choose(List, X)</code> unifies <code>X</code> with each element of <code>List</code> through backtracking.</p>
+<pre><code class="language-prolog">% Random velocity (Prolog tries all three)
+vel(V) :- choose([0.6, 0.8, 1.0], V).
+
+event(kick, 60, V, T) :- beat(T, 1), vel(V).
+event(hat, 60, V, T) :- every(T, 0.5), vel(V).
+</code></pre>
+<p><strong>What happens?</strong></p>
+<ul>
+<li>On each beat, Prolog backtracks through <code>choose([0.6, 0.8, 1.0], V)</code></li>
+<li>All three velocities are tried → three kick events fire (layered)</li>
+<li>This creates a &quot;thick&quot; sound with multiple velocity layers</li>
+</ul>
+<p><strong>For true randomness</strong>, use <code>pick/2</code> instead:</p>
+<pre><code class="language-prolog">vel(V) :- pick([0.6, 0.8, 1.0], V).  % Picks ONE random value
+</code></pre>
+<p><strong>Musical application</strong>:</p>
+<pre><code class="language-prolog">% Random drum voice on every quarter beat
+drum(V) :- pick([kick, snare, hat, clap], V).
+event(V, 60, 0.8, T) :- every(T, 0.25), drum(V).
+</code></pre>
+<h3>Tutorial Step 5: Probability with <code>prob/1</code></h3>
+<p><code>prob(P)</code> succeeds with probability <code>P</code> (0.0 to 1.0).</p>
+<pre><code class="language-prolog">% Kick always plays
+event(kick, 60, 0.9, T) :- beat(T, 1).
+
+% Snare plays 30% of the time
+event(snare, 60, 0.8, T) :- beat(T, 2), prob(0.3).
+</code></pre>
+<p><strong>Why use probability?</strong></p>
+<ul>
+<li>Adds <strong>humanization</strong> (not every note plays)</li>
+<li>Creates <strong>variation</strong> in otherwise repetitive patterns</li>
+<li>Models <strong>ghost notes</strong> (quiet, sporadic hits)</li>
+</ul>
+<p><strong>Example: Swingy hi-hats</strong></p>
+<pre><code class="language-prolog">% Dense hat grid with 70% probability
+event(hat, 42, 0.2, T) :- every(T, 0.125), prob(0.7).
+</code></pre>
+<h3>Tutorial Step 6: Cycling Patterns with <code>cycle/2</code></h3>
+<p><code>cycle(List, X)</code> steps through a list sequentially, wrapping around. Unlike <code>choose</code>, it <strong>maintains state</strong> across calls.</p>
+<pre><code class="language-prolog">% Alternating velocities: 0.8 → 1.0 → 0.9 → 1.1 → repeat
+pattern(V) :- cycle([0.8, 1.0, 0.9, 1.1], V).
+
+event(hat, 60, V, T) :- every(T, 0.25), pattern(V).
+</code></pre>
+<p><strong>Result</strong>: On successive sixteenth notes, the hat plays at 0.8, then 1.0, then 0.9, then 1.1, then back to 0.8, etc.</p>
+<p><strong>State persists</strong> even when you edit code! To reset, change examples or reload.</p>
+<p><strong>Musical application: Bassline</strong></p>
+<pre><code class="language-prolog">% Four-note bass motif that loops
+bass_note(N) :- cycle([40, 43, 47, 48], N).  % E, G, B, C
+event(sine, N, 0.6, T) :- every(T, 0.5), bass_note(N).
+</code></pre>
+<h3>Tutorial Step 7: Euclidean Rhythms with <code>euc/5</code></h3>
+<p><strong>Euclidean rhythms</strong> distribute <code>K</code> hits as evenly as possible over <code>N</code> steps. They appear in music worldwide (son clave, bossa nova, etc.).</p>
+<p><strong>Syntax</strong>: <code>euc(T, K, N, B, R)</code></p>
+<ul>
+<li><code>T</code>: Current time</li>
+<li><code>K</code>: Number of hits</li>
+<li><code>N</code>: Total steps</li>
+<li><code>B</code>: Beat subdivision (e.g., <code>4</code> for 16th notes over 4 beats)</li>
+<li><code>R</code>: Rotation (shifts the pattern)</li>
+</ul>
+<p><strong>Example</strong>:</p>
+<pre><code class="language-prolog">% 3 hits over 8 steps = [X . . X . . X .]
+event(kick, 60, 1.0, T) :- euc(T, 3, 8, 0.5, 0).
+
+% 5 hits over 8 steps, rotated by 2 = [. . X . X . X . X]
+event(snare, 60, 0.8, T) :- euc(T, 5, 8, 0.5, 2).
+</code></pre>
+<p><strong>Classic patterns</strong>:</p>
+<ul>
+<li><code>euc(T, 4, 16, 4, 0)</code>: Four-on-the-floor (kick on every beat)</li>
+<li><code>euc(T, 2, 16, 4, 4)</code>: Backbeat (snare on beats 2 &amp; 4)</li>
+<li><code>euc(T, 11, 16, 4, 0)</code>: Dense hi-hat pattern</li>
+</ul>
+<p>Try the <strong>&quot;Euclidean basics&quot;</strong> example to hear these in action!</p>
+<h3>Tutorial Step 8: Musical Scales with <code>scale/5</code></h3>
+<p><code>scale(Root, Mode, Degree, Octave, Midi)</code> converts a scale degree to a MIDI note.</p>
+<p><strong>Syntax</strong>:</p>
+<ul>
+<li><code>Root</code>: MIDI root note (e.g., <code>60</code> = C4)</li>
+<li><code>Mode</code>: Scale name (atom, e.g., <code>ionian</code>, <code>dorian</code>, <code>minor_pent</code>)</li>
+<li><code>Degree</code>: Scale degree (1 = root, 3 = third, etc.)</li>
+<li><code>Octave</code>: Octave offset (0 = same octave as root, 1 = one octave up)</li>
+<li><code>Midi</code>: Output MIDI note</li>
+</ul>
+<p><strong>Example: Pentatonic melody</strong></p>
+<pre><code class="language-prolog">% Cycling through pentatonic scale degrees: 1, 3, 4, 5, 8 (octave)
+note(N) :- cycle([1, 3, 4, 5, 8], D), scale(60, minor_pent, D, 0, N).
+
+event(sine, N, 0.8, T) :- every(T, 0.5), note(N).
+event(kick, 60, 1.0, T) :- beat(T, 1).
+</code></pre>
+<p><strong>Available modes</strong>:</p>
+<ul>
+<li><code>ionian</code> (major), <code>dorian</code>, <code>phrygian</code>, <code>lydian</code>, <code>mixolydian</code>, <code>aeolian</code> (natural minor), <code>locrian</code></li>
+<li><code>harmonic_minor</code>, <code>melodic_minor</code></li>
+<li><code>major_pent</code>, <code>minor_pent</code></li>
+<li><code>blues</code>, <code>whole_tone</code>, <code>chromatic</code></li>
+</ul>
+<p><strong>Pro tip</strong>: Use multiple clauses to create <strong>harmony</strong>:</p>
+<pre><code class="language-prolog">% C major triad (scale degrees 1, 3, 5)
+lead(T, N) :- every(T, 0.25), scale(60, ionian, 1, 0, N).  % C
+lead(T, N) :- every(T, 0.25), scale(60, ionian, 3, 0, N).  % E
+lead(T, N) :- every(T, 0.25), scale(60, ionian, 5, 0, N).  % G
+
+event(sine, N, 0.5, T) :- lead(T, N).
+% All three rules fire → three-note chord on every quarter beat!
+</code></pre>
+<h3>Tutorial Step 9: Chords with <code>chord/4</code></h3>
+<p><code>chord(Root, Quality, Octave, Midi)</code> generates all notes of a chord.</p>
+<p><strong>Syntax</strong>:</p>
+<ul>
+<li><code>Root</code>: MIDI root note</li>
+<li><code>Quality</code>: Chord quality (<code>maj</code>, <code>min</code>, <code>dim</code>, <code>aug</code>, <code>maj7</code>, <code>min7</code>, <code>dom7</code>)</li>
+<li><code>Octave</code>: Octave offset</li>
+<li><code>Midi</code>: Output (backtracks through all chord tones)</li>
+</ul>
+<p><strong>Example: Arpeggiated chord</strong></p>
+<pre><code class="language-prolog">% C major chord notes: 60 (C), 64 (E), 67 (G)
+arp(N) :- chord(60, maj, 0, N), choose(N, N).
+
+event(sine, N, 0.7, T) :- every(T, 0.25), arp(N).
+event(kick, 60, 1.0, T) :- beat(T, 1).
+</code></pre>
+<p>Wait, that looks redundant! Actually:</p>
+<ul>
+<li><code>chord(60, maj, 0, N)</code> unifies <code>N</code> with the <strong>list</strong> <code>[60, 64, 67]</code></li>
+<li>We need <code>choose</code> to pick individual notes from the list</li>
+</ul>
+<p><strong>Better approach</strong>:</p>
+<pre><code class="language-prolog">arp(Note) :- chord(60, min, 0, Notes), choose(Notes, Note).
+event(sine, Note, 0.7, T) :- every(T, 0.25), arp(Note).
+</code></pre>
+<p><strong>Musical context: Chord progression</strong></p>
+<pre><code class="language-prolog">% Different chords every 4 beats
+chord_now(N) :- within(T, 0, 4), chord(60, maj, 0, N).    % C major, bars 1-4
+chord_now(N) :- within(T, 4, 8), chord(65, min, 0, N).    % F minor, bars 5-8
+
+event(sine, N, 0.6, T) :- every(T, 1.0), chord_now(N), choose(N, N).
+</code></pre>
+<hr>
+<h2>Part IV: Advanced Techniques</h2>
+<p>Now let&#39;s explore <strong>time constraints</strong>, <strong>conditionals</strong>, and <strong>combining everything</strong> for complex patterns.</p>
+<h3>Tutorial Step 10: Time Constraints with <code>within/3</code></h3>
+<p><code>within(T, Start, End)</code> succeeds only when <code>T</code> is between <code>Start</code> and <code>End</code> beats.</p>
+<pre><code class="language-prolog">% Intro (0-8 beats): just kick
+event(kick, 60, 1.0, T) :- beat(T, 1).
+
+% Verse (8-16 beats): add snare
+event(snare, 60, 0.8, T) :- beat(T, 2), within(T, 8, 16).
+</code></pre>
+<p><strong>Use cases</strong>:</p>
+<ul>
+<li><strong>Song structure</strong>: Intro, verse, chorus, breakdown</li>
+<li><strong>Fills</strong>: Only play during specific bars</li>
+<li><strong>Build-ups</strong>: Gradually add elements</li>
+</ul>
+<p><strong>Example: Progressive build</strong></p>
+<pre><code class="language-prolog">% Kick always plays
+event(kick, 36, 0.95, T) :- euc(T, 4, 16, 4, 0).
+
+% Add hats after 4 beats
+event(hat, 42, 0.25, T) :- every(T, 0.5), within(T, 4, 999).
+
+% Add snare after 8 beats
+event(snare, 38, 0.85, T) :- euc(T, 2, 16, 4, 4), within(T, 8, 999).
+
+% Bass comes in at beat 12
+event(sine, N, 0.6, T) :- every(T, 0.5), pick([40,43,47,48], N), within(T, 12, 999).
+</code></pre>
+<h3>Tutorial Step 11: Cooldowns with <code>cooldown/3</code></h3>
+<p><code>cooldown(Now, Last, Gap)</code> prevents events from firing too close together.</p>
+<p><strong>Syntax</strong>: <code>cooldown(T, state_key, MinGap)</code></p>
+<ul>
+<li><code>T</code>: Current time</li>
+<li><code>state_key</code>: A unique atom identifying this cooldown (e.g., <code>last_fill</code>)</li>
+<li><code>MinGap</code>: Minimum time (in beats) between triggers</li>
+</ul>
+<p><strong>Example: Snare fills every 4 bars minimum</strong></p>
+<pre><code class="language-prolog">fill(T) :- beat(T, 1), cooldown(T, last_fill, 16).
+
+event(kick, 60, 1.0, T) :- beat(T, 1).
+event(snare, 60, V, T) :- fill(T), choose([0.8, 0.9, 1.0], V), every(T, 0.25).
+</code></pre>
+<p><strong>What happens?</strong></p>
+<ol>
+<li>Every beat, Prolog checks <code>fill(T)</code></li>
+<li><code>cooldown(T, last_fill, 16)</code> succeeds only if 16+ beats have passed since the last fill</li>
+<li>When it succeeds, the snare plays rapid 16th notes with varying velocity</li>
+</ol>
+<p><strong>Use cases</strong>:</p>
+<ul>
+<li><strong>Fills</strong>: Snare rolls, tom hits</li>
+<li><strong>Transitions</strong>: Cymbal crashes</li>
+<li><strong>Variation</strong>: Occasional accent hits</li>
+</ul>
+<h3>Tutorial Step 12: Combining Everything</h3>
+<p>Now let&#39;s combine techniques into a full pattern.</p>
+<pre><code class="language-prolog">% Drums with Euclidean rhythms
+drums(kick) :- euc(T, 3, 8, 0.5, 0).
+drums(snare) :- euc(T, 5, 8, 0.5, 3).
+
+% Cycling velocities for dynamics
+vel(V) :- cycle([0.7, 0.8, 0.9, 1.0], V).
+
+% Melody using Dorian mode (minor with raised 6th)
+melody(N) :- scale(60, dorian, D, 0, N), cycle([1, 3, 5, 4], D).
+
+% Events
+event(Voice, 60, V, T) :- drums(Voice), every(T, 0.5), vel(V).
+event(sine, N, 0.7, T) :- every(T, 1.0), melody(N), prob(0.7).
+</code></pre>
+<p><strong>Analysis</strong>:</p>
+<ul>
+<li><code>drums(Voice)</code> uses <strong>backtracking</strong> to try both <code>kick</code> and <code>snare</code></li>
+<li><code>vel(V)</code> <strong>cycles</strong> through dynamic levels</li>
+<li><code>melody(N)</code> <strong>combines</strong> <code>scale</code> with <code>cycle</code> for a repeating motif</li>
+<li><code>prob(0.7)</code> adds <strong>variation</strong> (melody plays 70% of the time)</li>
+</ul>
+<p>Try the <strong>&quot;Polyrhythm + probability&quot;</strong> example to hear a similar pattern!</p>
+<h3>Recursion in Music</h3>
+<p>Remember Prolog recursion? Here&#39;s how it works for music:</p>
+<p><strong>Example: Walking through a note sequence</strong></p>
+<pre><code class="language-prolog">% Base case: first item of list
+seq([H|_], H).
+
+% Recursive case: try remaining items
+seq([_|T], X) :- seq(T, X).
+
+% Melody: backtrack through all notes in the sequence
+mel_note(N) :- seq([72, 74, 76, 79, 81], N).
+
+event(sine, N, 0.65, T) :- every(T, 0.25), mel_note(N).
+</code></pre>
+<p><strong>Result</strong>: On every quarter beat, ALL five notes fire simultaneously (creating a dense cluster).</p>
+<p><strong>For sequential playback</strong> (one note at a time), use <code>cycle</code> instead:</p>
+<pre><code class="language-prolog">mel_note(N) :- cycle([72, 74, 76, 79, 81], N).
+event(sine, N, 0.65, T) :- every(T, 0.25), mel_note(N).
+</code></pre>
+<p>Try the <strong>&quot;Recursive loops&quot;</strong> example for more!</p>
+<h3>Advanced Built-ins</h3>
+<p><strong>Melodic transforms</strong>:</p>
+<ul>
+<li><code>transpose(Note, Offset, Out)</code>: Shift MIDI note by semitones</li>
+<li><code>rotate(List, Shift, OutList)</code>: Rotate a list by N positions</li>
+</ul>
+<pre><code class="language-prolog">% Original melody
+melody([60, 64, 67, 69]).
+
+% Play original
+mel1(T, N) :- every(T, 0.25), melody(M), choose(M, N).
+
+% Rotate by 1 and transpose up a fifth (+7 semitones)
+mel2(T, N) :- every(T, 0.25), melody(M), rotate(M, 1, R), choose(R, X), transpose(X, 7, N).
+
+event(sine, N, 0.5, T) :- mel1(T, N).
+event(square, N, 0.35, T) :- mel2(T, N).
+</code></pre>
+<p>See <strong>&quot;Melodic transforms&quot;</strong> example!</p>
+<p><strong>Random generators</strong>:</p>
+<ul>
+<li><code>rand(Min, Max, X)</code>: Random float in range</li>
+<li><code>randint(Min, Max, X)</code>: Random integer in range</li>
+</ul>
+<pre><code class="language-prolog">% Random melody (2-octave range)
+chaos(T, N) :- every(T, 0.125), randint(60, 84, N), prob(0.5).
+
+% Random velocity for each note
+event(sine, N, V, T) :- chaos(T, N), rand(0.3, 0.9, V).
+</code></pre>
+<p>See <strong>&quot;Generative chaos&quot;</strong> example for wild randomness!</p>
+<p><strong>Arithmetic and comparisons</strong>:</p>
+<ul>
+<li><code>eq(A, B)</code>: Deep equality check</li>
+<li><code>add(A, B, C)</code>: C = A + B</li>
+<li><code>lt(A, B)</code>, <code>gt(A, B)</code>: Less than, greater than</li>
+<li>Infix: <code>&lt;</code>, <code>&gt;</code>, <code>=&lt;</code>, <code>&gt;=</code>, <code>=:=</code>, <code>=\=</code></li>
+</ul>
+<pre><code class="language-prolog">% Only play bass in the first 16 beats
+event(sine, 40, 0.7, T) :- every(T, 0.5), T &lt; 16.
+
+% Add 7 semitones for a fifth interval
+transpose(N, 7, N2) :- add(N, 7, N2).
+</code></pre>
+<hr>
+<h2>Part V: Prolog Deep Dive</h2>
+<p>Now that you&#39;ve made music with Prolog, let&#39;s explore the <strong>theory</strong> behind how it works.</p>
+<h3>Unification in Detail</h3>
+<p><strong>Unification</strong> is the process of making two terms identical by finding variable bindings.</p>
+<p><strong>Rules</strong>:</p>
+<ol>
+<li><strong>Atoms</strong> unify if they&#39;re the same: <code>kick = kick</code> ✓, <code>kick = snare</code> ✗</li>
+<li><strong>Numbers</strong> unify if equal: <code>60 = 60</code> ✓, <code>60 = 64</code> ✗</li>
+<li><strong>Variables</strong> unify with anything, binding to that value: <code>X = 60</code> binds <code>X</code> to <code>60</code></li>
+<li><strong>Compounds</strong> unify if functors match and all arguments unify:<ul>
+<li><code>event(kick, 60, V, T) = event(kick, 60, 0.8, 2.5)</code> ✓</li>
+<li>Binds: <code>V = 0.8</code>, <code>T = 2.5</code></li>
+</ul>
+</li>
+<li><strong>Lists</strong> unify element-wise:<ul>
+<li><code>[1, 2, 3] = [H|T]</code> → <code>H = 1</code>, <code>T = [2, 3]</code></li>
+</ul>
+</li>
+</ol>
+<p><strong>Occurs check</strong>: Prolog doesn&#39;t check if a variable unifies with a term containing itself (this is a feature for efficiency). Example: <code>X = foo(X)</code> succeeds (infinite structure).</p>
+<h3>Backtracking Mechanics</h3>
+<p>When Prolog encounters multiple possible solutions, it uses <strong>backtracking</strong> to try them all:</p>
+<ol>
+<li><strong>Choose</strong> the first clause that could match</li>
+<li><strong>Try</strong> to satisfy all goals in that clause</li>
+<li>If successful, <strong>yield</strong> a solution</li>
+<li>If the user asks for more (or code requires it), <strong>backtrack</strong>: undo the last choice and try the next possibility</li>
+<li><strong>Repeat</strong> until all possibilities exhausted</li>
+</ol>
+<p><strong>Example</strong>:</p>
+<pre><code class="language-prolog">note(60).
+note(64).
+note(67).
+
+melody(N) :- note(N).
+
+% Query: melody(X)
+% 1. Try note(60) → X = 60 (solution 1)
+% 2. Backtrack, try note(64) → X = 64 (solution 2)
+% 3. Backtrack, try note(67) → X = 67 (solution 3)
+% 4. No more clauses → done
+</code></pre>
+<p><strong>In livecoding</strong>: When the engine queries <code>event(Voice, Pitch, Vel, T)</code> at time <code>T=2.5</code>, Prolog tries ALL rules. Every successful rule produces an event, so <strong>multiple sounds can play simultaneously</strong>.</p>
+<h3>Conjunction (AND) and Disjunction (OR)</h3>
+<p><strong>Conjunction</strong> (<code>,</code>): All goals must succeed</p>
+<pre><code class="language-prolog">heavy(X) :- drum(X), loud(X).
+% X is heavy if X is a drum AND X is loud
+</code></pre>
+<p>Goals are tried <strong>left-to-right</strong>. If any fails, the whole conjunction fails.</p>
+<p><strong>Disjunction</strong> (<code>;</code>): At least one goal must succeed</p>
+<pre><code class="language-prolog">playable(X) :- drum(X) ; synth(X).
+% X is playable if X is a drum OR X is a synth
+</code></pre>
+<p><strong>Grouping with parentheses</strong>:</p>
+<pre><code class="language-prolog">foo(X) :- (a(X) ; b(X)), c(X).
+% (a OR b) AND c
+</code></pre>
+<h3>Negation as Failure</h3>
+<p><code>\+ Goal</code> succeeds if <code>Goal</code> has <strong>no solutions</strong>.</p>
+<pre><code class="language-prolog">% Play snare only when kick doesn&#39;t play
+event(snare, 38, 0.8, T) :- every(T, 0.5), \+ beat(T, 1).
+</code></pre>
+<p><strong>Important</strong>: <code>\+</code> is &quot;negation as failure,&quot; not logical negation. If <code>Goal</code> might succeed later with different bindings, <code>\+ Goal</code> might be wrong!</p>
+<p><strong>Safe usage</strong>: Use <code>\+</code> with <strong>ground terms</strong> (no unbound variables):</p>
+<pre><code class="language-prolog">% Good: checking a specific value
+... :- \+ (T =:= 4).
+
+% Risky: unbound variable X
+... :- \+ foo(X).
+</code></pre>
+<h3>Arithmetic Expressions</h3>
+<p>Prolog evaluates arithmetic <strong>only when explicitly asked</strong>.</p>
+<p><strong>Infix operators</strong> (evaluated automatically):</p>
+<ul>
+<li><code>T &lt; 8</code>: Evaluates <code>T</code> and <code>8</code>, compares numerically</li>
+<li><code>Vel =:= 0.8</code>: Numeric equality</li>
+<li><code>N1 = (N + 7)</code>: Unifies <code>N1</code> with the <strong>term</strong> <code>(N + 7)</code>, doesn&#39;t compute!</li>
+</ul>
+<p><strong>Computed with <code>is/2</code></strong> (not built into Dogalog, but standard Prolog):</p>
+<pre><code class="language-prolog">% Standard Prolog
+X is 3 + 4.  % X = 7
+</code></pre>
+<p><strong>In Dogalog</strong>, use <code>add/3</code>:</p>
+<pre><code class="language-prolog">add(3, 4, X).  % X = 7
+</code></pre>
+<h3>The <code>event/4</code> Top Goal</h3>
+<p>Remember: Dogalog&#39;s scheduler repeatedly queries <code>event(Voice, Pitch, Vel, T)</code> where <code>T</code> is the current time.</p>
+<p><strong>Execution model</strong>:</p>
+<ol>
+<li>Scheduler advances to time <code>T = 0.0</code></li>
+<li>Query: <code>event(V, P, Vel, 0.0)</code></li>
+<li>Prolog backtracks through ALL rules, finding every solution</li>
+<li>Each solution triggers a sound event</li>
+<li>Scheduler advances to <code>T = 0.25</code> (next grid tick)</li>
+<li>Repeat</li>
+</ol>
+<p><strong>This is why multiple events can play simultaneously</strong>: Each matching rule produces one event!</p>
+<h3>Cut (<code>!</code>) and Control</h3>
+<p><strong>Cut</strong> (<code>!</code>) commits to the current choice, preventing backtracking. Dogalog <strong>does not support cut</strong>, but it&#39;s worth knowing for standard Prolog.</p>
+<pre><code class="language-prolog">% Standard Prolog (not in Dogalog)
+max(X, Y, X) :- X &gt;= Y, !.
+max(X, Y, Y).
+% The cut prevents trying the second clause if X &gt;= Y
+</code></pre>
+<p><strong>Why no cut in Dogalog?</strong> We <em>want</em> backtracking to fire multiple events!</p>
+<h3>Anonymous Variables and Singleton Warnings</h3>
+<p>Variables starting with <code>_</code> are <strong>anonymous</strong> — they won&#39;t trigger &quot;singleton variable&quot; warnings.</p>
+<pre><code class="language-prolog">% Good: we don&#39;t care about Pitch or Velocity
+is_kick(T) :- event(kick, _, _, T).
+
+% Warning: P and V are unused (should be _ or _P, _V)
+is_kick(T) :- event(kick, P, V, T).
+</code></pre>
+<hr>
+<h2>Part VI: Example Walkthroughs</h2>
+<p>Let&#39;s analyze some of the built-in examples to see these concepts in action.</p>
+<h3>Example: &quot;Euclidean basics (drums + bass)&quot;</h3>
+<pre><code class="language-prolog">% Kick: 4 hits over 16 steps, every 4 beats, no rotation
+kik(T) :- euc(T, 4, 16, 4, 0).
+
+% Snare: 2 hits over 16 steps, rotated by 4 (backbeat)
+snr(T) :- euc(T, 2, 16, 4, 4).
+
+% Hi-hat: 11 hits over 16 steps (dense, syncopated pattern)
+hat(T) :- euc(T, 11, 16, 4, 0).
+
+% Map to events
+event(kick, 36, 0.95, T) :- kik(T).
+event(snare, 38, 0.85, T) :- snr(T).
+event(hat, 42, 0.25, T) :- hat(T).
+
+% Bass: choose random note every half beat
+bass(T, N) :- every(T, 0.5), choose([40, 43, 47, 48], N).
+event(sine, N, 0.55, T) :- bass(T, N).
+</code></pre>
+<p><strong>Analysis</strong>:</p>
+<ul>
+<li>Uses <strong>Euclidean rhythms</strong> for organic-sounding drums</li>
+<li><code>choose/2</code> creates <strong>harmonic variation</strong> in the bass (all four notes play simultaneously)</li>
+<li>Velocities are <strong>tuned for balance</strong> (kick loud, hat quiet)</li>
+</ul>
+<h3>Example: &quot;Polyrhythm + probability&quot;</h3>
+<pre><code class="language-prolog">kik(T) :- beat(T, 3).              % Every 3 beats
+snr(T) :- beat(T, 2), prob(0.7).   % Every 2 beats, 70% chance
+hat(T) :- beat(T, 5).              % Every 5 beats (polyrhythm!)
+
+fill(T) :- phase(T, 16, 15), prob(0.5).  % Bar-end fill, 50% chance
+
+event(kick, 36, 0.95, T) :- kik(T).
+event(snare, 38, 0.85, T) :- snr(T).
+event(hat, 42, 0.25, T) :- hat(T).
+event(hat, 44, 0.40, T) :- fill(T).  % Higher-pitched hat for fills
+</code></pre>
+<p><strong>Analysis</strong>:</p>
+<ul>
+<li><strong>Polyrhythm</strong>: 3-beat kick vs. 2-beat snare vs. 5-beat hat creates complex interlocking pattern</li>
+<li><code>prob/1</code> adds <strong>humanization</strong> (snare doesn&#39;t always hit, fill is occasional)</li>
+<li><code>phase(T, 16, 15)</code> means &quot;step 15 of every 16 steps&quot; = last 16th note of the bar</li>
+</ul>
+<h3>Example: &quot;Scales + chord arps&quot;</h3>
+<pre><code class="language-prolog">% Ionian (major) scale harmonized: degrees 1, 3, 5, 8
+lead(T, N) :- every(T, 0.25), scale(60, ionian, 1, 0, N).  % C
+lead(T, N) :- every(T, 0.25), scale(60, ionian, 3, 0, N).  % E
+lead(T, N) :- every(T, 0.25), scale(60, ionian, 5, 0, N).  % G
+lead(T, N) :- every(T, 0.25), scale(60, ionian, 8, 0, N).  % C (octave)
+
+% A minor7 chord (A-C-E-G)
+arp(T, N) :- every(T, 0.5), chord(57, min7, 0, N).
+
+% Drums
+kik(T) :- euc(T, 4, 16, 4, 0).
+hat(T) :- euc(T, 11, 16, 4, 0).
+
+event(kick, 36, 0.95, T) :- kik(T).
+event(hat, 42, 0.25, T) :- hat(T).
+event(sine, N, 0.50, T) :- lead(T, N).  % Softer
+event(sine, N, 0.60, T) :- arp(T, N).   % Louder
+</code></pre>
+<p><strong>Analysis</strong>:</p>
+<ul>
+<li><strong>Four clauses for <code>lead/2</code></strong> → all four notes play simultaneously → <strong>chord</strong></li>
+<li><code>chord/4</code> returns a list, which <code>arp/2</code> handles (backtracking through chord tones)</li>
+<li><strong>Dynamic layering</strong>: Different velocities separate lead from arp</li>
+</ul>
+<h3>Example: &quot;Minimal microhouse&quot;</h3>
+<pre><code class="language-prolog">kik(T) :- euc(T, 4, 16, 4, 0).       % Steady kick
+snr(T) :- phase(T, 8, 4).            % Clap on step 4 of every 8
+hat(T) :- every(T, 0.125), prob(0.6).  % Sparse, probabilistic hats
+perc(T) :- beat(T, 7), prob(0.3).    % Occasional texture every 7 beats
+
+% Dorian mode bass (minor with raised 6th)
+bass(T, N) :- every(T, 0.5), scale(48, dorian, 1, 0, N).  % Root
+bass(T, N) :- every(T, 1.0), scale(48, dorian, 5, 0, N).  % 5th
+
+event(kick, 36, 0.95, T) :- kik(T).
+event(snare, 38, 0.75, T) :- snr(T).
+event(hat, 42, 0.18, T) :- hat(T).   % Very quiet hats
+event(hat, 46, 0.22, T) :- perc(T).  % Open hat for texture
+event(sine, N, 0.45, T) :- bass(T, N).
+</code></pre>
+<p><strong>Analysis</strong>:</p>
+<ul>
+<li><strong>Microhouse aesthetic</strong>: Sparse patterns, low velocities, subtle textures</li>
+<li><code>phase(T, 8, 4)</code> for precise <strong>rhythmic placement</strong></li>
+<li><strong>Two-note bass</strong> (root + fifth) creates movement without complexity</li>
+<li><code>prob/1</code> ensures patterns never feel mechanical</li>
+</ul>
+<hr>
+<h2>Next Steps</h2>
+<p>Congratulations! You&#39;ve learned Prolog <strong>and</strong> livecoding. Here&#39;s what to do next:</p>
+<h3>1. Explore the Examples</h3>
+<p>Load each example from the dropdown and <strong>study the code</strong>:</p>
+<ul>
+<li>How do they use built-ins?</li>
+<li>How are patterns layered?</li>
+<li>What makes them musical?</li>
+</ul>
+<h3>2. Experiment in the REPL</h3>
+<p>At the bottom of the app, there&#39;s an <strong>interactive REPL</strong> where you can query your code:</p>
+<pre><code class="language-prolog">?- kik(0.5).    % Does the kick play at time 0.5?
+?- bass(1.0, N). % What bass notes play at time 1.0?
+</code></pre>
+<p>This helps you <strong>debug</strong> and <strong>understand</strong> your patterns!</p>
+<h3>3. Read the Manual</h3>
+<p>The <a href="manual.html">Manual</a> covers:</p>
+<ul>
+<li>Complete built-in reference</li>
+<li>Advanced syntax (negation, disjunction, arithmetic)</li>
+<li>Troubleshooting tips</li>
+</ul>
+<h3>4. Check the Cheatsheet</h3>
+<p>The <a href="cheatsheet.html">Cheatsheet</a> is a quick reference for syntax and common patterns — perfect for livecoding!</p>
+<h3>5. Dive Deeper into Prolog</h3>
+<p>If you want to learn <strong>real</strong> Prolog:</p>
+<ul>
+<li><a href="http://www.learnprolognow.org/">Learn Prolog Now!</a> (free online book)</li>
+<li><a href="https://www.swi-prolog.org/">SWI-Prolog</a> (the most popular Prolog implementation)</li>
+<li><a href="https://www.metalevel.at/prolog">The Power of Prolog</a> (video course)</li>
+</ul>
+<h3>6. Share Your Music!</h3>
+<p>Dogalog is perfect for <strong>livecoding performances</strong>. Share your patterns, perform live, and join the livecoding community!</p>
+<h3>7. Advanced Challenges</h3>
+<p>Try these to level up:</p>
+<p><strong>Challenge 1: Song Structure</strong>
+Create a 32-beat &quot;song&quot; with intro, verse, chorus, and outro using <code>within/3</code>.</p>
+<p><strong>Challenge 2: Generative Melody</strong>
+Use <code>randint</code> and <code>scale</code> to create a melody that&#39;s different every time but stays in key.</p>
+<p><strong>Challenge 3: Recursive Arpeggio</strong>
+Write a recursive rule that plays a chord arpeggio with custom timing (not using <code>cycle</code>).</p>
+<p><strong>Challenge 4: Polymeter</strong>
+Create a pattern where kick is in 4/4 but snare is in 5/4 (use <code>phase</code> or math).</p>
+<p><strong>Challenge 5: Call and Response</strong>
+Create two melodic phrases where the second &quot;responds&quot; to the first (use <code>within</code> for structure).</p>
+<hr>
+<h2>Conclusion</h2>
+<p>You&#39;ve now learned:</p>
+<ul>
+<li><strong>Prolog fundamentals</strong>: Facts, rules, queries, unification, backtracking, recursion</li>
+<li><strong>Livecoding basics</strong>: The <code>event/4</code> predicate, rhythm patterns, instruments</li>
+<li><strong>Musical techniques</strong>: Euclidean rhythms, scales, chords, probability, state</li>
+<li><strong>Advanced concepts</strong>: Time constraints, cooldowns, recursion, arithmetic</li>
+</ul>
+<p>Prolog&#39;s <strong>declarative</strong> nature makes it uniquely suited for livecoding: you describe <em>what</em> should happen, not <em>how</em>. The engine handles the rest through <strong>backtracking</strong> and <strong>unification</strong>.</p>
+<p>Now go make some music! 🎵</p>
+<hr>
+<p><em>This tutorial was written for Dogalog v0.1.0. For updates and contributions, visit the <a href="https://github.com/danja/dogalog">GitHub repository</a>.</em></p>
+
+</body>
+</html>

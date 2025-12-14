@@ -1,6 +1,16 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Dogalog Manual</title>
+  <link rel="stylesheet" href="docs.css" />
+</head>
+<body>
 <h1>Dogalog Manual</h1>
 <h2>What is this?</h2>
 <p>A tiny, Prolog-ish livecoding playground in the browser. You write facts and rules; the engine queries <code>event(Voice, Pitch, Vel, T)</code> every step and plays matching sounds.</p>
+<p><strong>New to Prolog or livecoding?</strong> Start with the <a href="tutorial.html">Full Tutorial</a> for a comprehensive guide that teaches both!</p>
 <h2>Getting started</h2>
 <ol>
 <li>Open the app (GitHub Pages link in the README).</li>
@@ -104,3 +114,6 @@ motif(T) :- play_seq(T, 0.25, [60,62,65,67]).
 <li>Parse errors: check missing periods or mismatched parens/brackets.</li>
 <li>Network/Pages: hard refresh or disable old service workers if a stale cached build interferes.</li>
 </ul>
+
+</body>
+</html>

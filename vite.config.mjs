@@ -15,12 +15,11 @@ export default defineConfig({
         enabled: true,
         type: 'module'
       },
-      includeAssets: ['docs/manual.html', 'docs/cheatsheet.html', 'icons/*.png'],
+      includeAssets: ['docs/manual.html', 'docs/cheatsheet.html', 'docs/tutorial.html', 'docs/docs.css', 'icons/*.png', 'screenshots/*.png'],
       manifest: {
         name: 'Dogalog - Prolog Livecoding',
         short_name: 'Dogalog',
         description: 'Realtime Prolog-based livecoding music environment',
-        form_factor: 'wide',
         theme_color: '#7ee787',
         background_color: '#0b0c10',
         display: 'standalone',
@@ -49,6 +48,29 @@ export default defineConfig({
             sizes: '512x512',
             type: 'image/png',
             purpose: 'maskable'
+          }
+        ],
+        screenshots: [
+          {
+            src: `${base}screenshots/desktop-1.png`,
+            sizes: '1280x720',
+            type: 'image/png',
+            form_factor: 'wide',
+            label: 'Dogalog desktop view - code editor and live controls'
+          },
+          {
+            src: `${base}screenshots/desktop-2.png`,
+            sizes: '1280x720',
+            type: 'image/png',
+            form_factor: 'wide',
+            label: 'Dogalog REPL and instrument panel'
+          },
+          {
+            src: `${base}screenshots/mobile-1.png`,
+            sizes: '750x1334',
+            type: 'image/png',
+            form_factor: 'narrow',
+            label: 'Dogalog mobile view'
           }
         ]
       },

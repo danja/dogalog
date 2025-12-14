@@ -3,6 +3,8 @@
 ## What is this?
 A tiny, Prolog-ish livecoding playground in the browser. You write facts and rules; the engine queries `event(Voice, Pitch, Vel, T)` every step and plays matching sounds.
 
+**New to Prolog or livecoding?** Start with the [Full Tutorial](tutorial.html) for a comprehensive guide that teaches both!
+
 ## Getting started
 1. Open the app (GitHub Pages link in the README).
 2. Click once on the page, then press **Start** to unlock audio.

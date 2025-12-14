@@ -226,10 +226,11 @@ src/
 
 ## Documentation
 
-- **Interactive Tutorial**: Click "Tutorial" button in the app
-- **Manual**: `docs/manual.html` (comprehensive reference)
-- **Cheatsheet**: `docs/cheatsheet.html` (quick reference)
-- **Live Demo**: [GitHub Pages](https://yourusername.github.io/dogalog/)
+- **Interactive Tutorial**: Click "Tutorial" button in the app for 13 guided steps
+- **[Full Tutorial](https://danja.github.io/dogalog/docs/tutorial.html)**: Comprehensive guide teaching both Prolog and livecoding
+- **[Manual](https://danja.github.io/dogalog/docs/manual.html)**: Complete reference for all built-ins and syntax
+- **[Cheatsheet](https://danja.github.io/dogalog/docs/cheatsheet.html)**: Quick reference for common patterns
+- **Live Demo**: [GitHub Pages](https://danja.github.io/dogalog/)
 
 ## Technical Details
 

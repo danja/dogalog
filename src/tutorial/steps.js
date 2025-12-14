@@ -8,7 +8,9 @@ export const tutorialSteps = [
     title: 'Welcome to Dogalog',
     content: `Dogalog is a livecoding music environment where you write Prolog-like rules to create rhythmic patterns.
 
-The engine asks <code>event(Voice, Pitch, Vel, T)</code> every step and plays matching results.`,
+The engine asks <code>event(Voice, Pitch, Vel, T)</code> every step and plays matching results.
+
+📖 For a complete guide to Prolog and livecoding, see the <a href="docs/tutorial.html" target="_blank">Full Tutorial</a>.`,
     code: `% Try your first sound - a kick drum on every beat
 event(kick, 60, 80, T) :- beat(T, 1).`,
     action: 'Click Start, then try changing the code!'
@@ -161,9 +163,12 @@ event(sine, N, 70, T) :- every(T, 1), melody(N), prob(0.7).`,
     content: `Congratulations! You've learned the fundamentals of Dogalog.
 
 Next steps:
-- Explore the examples in the dropdown
-- Read the full manual for advanced techniques
-- Experiment and create your own patterns!
+- 📖 Read the <a href="docs/tutorial.html" target="_blank">Full Tutorial</a> to learn Prolog deeply
+- 📚 Check the <a href="docs/manual.html" target="_blank">Manual</a> for complete built-in reference
+- 📝 Use the <a href="docs/cheatsheet.html" target="_blank">Cheatsheet</a> for quick syntax lookup
+- 🎵 Explore the examples in the dropdown
+- 💡 Experiment with the REPL (bottom of page) to test queries
+- 🎹 Create your own unique patterns!
 
 Remember: Code changes apply automatically, and state persists (use example selector to reset).`,
     code: `% Your canvas awaits!
